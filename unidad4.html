@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 4: Integración Total y Proyecto Final</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        aurora: {
+                            gold: '#ffd700',
+                            amber: '#ffbf00',
+                            copper: '#b87333',
+                            bronze: '#cd7f32',
+                            plasma: '#00ff88'
+                        },
+                        cosmic: {
+                            deep: '#030014',
+                            nebula: '#1a0033',
+                            void: '#000000',
+                            star: '#ffffff'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'monospace'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        :root {
+            --aurora-gold: #ffd700;
+            --aurora-amber: #ffbf00;
+            --aurora-copper: #b87333;
+            --aurora-plasma: #00ff88;
+            --cosmic-deep: #030014;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--aurora-gold) var(--cosmic-deep);
+        }
+
+        *::-webkit-scrollbar { width: 6px; }
+        *::-webkit-scrollbar-track { background: var(--cosmic-deep); }
+        *::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--aurora-gold), var(--aurora-amber)); border-radius: 3px; }
+
+        body {
+            background: radial-gradient(ellipse at center, #0a0020 0%, #030014 40%, #000000 100%);
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* Aurora Effect */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 191, 0, 0.03) 0%, transparent 70%);
+            animation: aurora-shift 15s ease-in-out infinite;
+        }
+
+        @keyframes aurora-shift {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        /* Golden Glow */
+        .gold-glow {
+            box-shadow: 
+                0 0 20px rgba(255, 215, 0, 0.3),
+                0 0 40px rgba(255, 215, 0, 0.2),
+                0 0 60px rgba(255, 215, 0, 0.1);
+        }
+
+        .text-gold-glow {
+            text-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.8),
+                0 0 20px rgba(255, 215, 0, 0.5),
+                0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Cosmic Card */
+        .cosmic-card {
+            background: linear-gradient(145deg, rgba(10, 0, 30, 0.95), rgba(3, 0, 20, 0.98));
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            backdrop-filter: blur(20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .cosmic-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--aurora-gold), transparent 50%, var(--aurora-plasma));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .cosmic-card:hover::before {
+            opacity: 1;
+        }
+
+        .cosmic-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 25px 50px rgba(255, 215, 0, 0.1),
+                0 0 50px rgba(255, 215, 0, 0.05);
+        }
+
+        /* Crown Frame */
+        .crown-frame {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .crown-frame::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 28px;
+            background: conic-gradient(
+                from 0deg,
+                var(--aurora-gold),
+                var(--aurora-amber),
+                var(--aurora-copper),
+                var(--aurora-plasma),
+                var(--aurora-gold)
+            );
+            animation: crown-rotate 6s linear infinite;
+            z-index: -1;
+        }
+        .crown-frame::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 28px;
+            background: conic-gradient(
+                from 180deg,
+                var(--aurora-gold),
+                var(--aurora-amber),
+                var(--aurora-copper),
+                var(--aurora-plasma),
+                var(--aurora-gold)
+            );
+            animation: crown-rotate 6s linear infinite reverse;
+            z-index: -2;
+            filter: blur(20px);
+            opacity: 0.6;
+        }
+
+        @keyframes crown-rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Float Animations */
+        .float-aurora { animation: float-aurora 7s ease-in-out infinite; }
+        .float-cosmic { animation: float-cosmic 5s ease-in-out infinite; }
+        .float-plasma { animation: float-plasma 6s ease-in-out infinite; }
+
+        @keyframes float-aurora {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(1deg); }
+            50% { transform: translateY(-25px) rotate(-1deg); }
+            75% { transform: translateY(-15px) rotate(1deg); }
+        }
+        @keyframes float-cosmic {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.02); }
+        }
+        @keyframes float-plasma {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            33% { transform: translateY(-10px) rotate(2deg) scale(1.01); }
+            66% { transform: translateY(-20px) rotate(-2deg) scale(1.02); }
+        }
+
+        /* Star Field */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Code Block */
+        .cosmic-prompt {
+            background: rgba(0, 5, 15, 0.95);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 16px;
+            font-family: 'Outfit', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        .cosmic-prompt::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--aurora-gold), transparent);
+        }
+        .cosmic-prompt::after {
+            content: 'STACK CONFIG';
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: #030014;
+            padding: 2px 12px;
+            font-size: 9px;
+            color: var(--aurora-gold);
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 0.15em;
+        }
+
+        /* Progress */
+        .progress-gold {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-gold-fill {
+            background: linear-gradient(90deg, var(--aurora-gold), var(--aurora-plasma));
+            height: 100%;
+            transition: width 1s ease;
+        }
+
+        /* Section Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Chat Window */
+        #chat-window { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transform: translateY(30px) scale(0.95); 
+            opacity: 0; 
+            pointer-events: none;
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            z-index: 10001;
+        }
+        #chat-window.active { 
+            transform: translateY(0) scale(1); 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+
+        .bot-trigger {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            animation: pulse-aurora 2s infinite;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0020, #1a0033);
+            box-shadow: 
+                0 0 40px rgba(255, 215, 0, 0.5),
+                inset 0 0 30px rgba(255, 215, 0, 0.1);
+        }
+        .bot-trigger img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 3px solid var(--aurora-gold);
+            border-radius: 50%;
+        }
+
+        @keyframes pulse-aurora {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 215, 0, 0.5); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 215, 0, 0), 0 0 40px rgba(255, 215, 0, 0.5); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0), 0 0 40px rgba(255, 215, 0, 0.5); }
+        }
+
+        #chat-content::-webkit-scrollbar { width: 4px; }
+        #chat-content::-webkit-scrollbar-thumb { background: rgba(255, 215, 0, 0.3); border-radius: 10px; }
+
+        /* Stack Diagram */
+        .stack-layer {
+            position: relative;
+            padding: 1rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 255, 136, 0.05));
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            margin-bottom: 0.5rem;
+        }
+        .stack-layer::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -0.5rem;
+            width: 2px;
+            height: 0.5rem;
+            background: var(--aurora-gold);
+        }
+        .stack-layer:last-child::before {
+            display: none;
+        }
+
+        /* Profile Cards */
+        .profile-card {
+            background: linear-gradient(145deg, rgba(10, 0, 30, 0.9), rgba(5, 0, 20, 0.95));
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: 20px;
+            transition: all 0.4s ease;
+        }
+        .profile-card:hover {
+            border-color: var(--aurora-gold);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Achievement Badge */
+        .achievement {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 191, 0, 0.1));
+            border: 1px solid var(--aurora-gold);
+            border-radius: 100px;
+        }
+        .achievement::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 100px;
+            background: linear-gradient(135deg, var(--aurora-gold), var(--aurora-amber));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .achievement:hover::before {
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    
+    <!-- Aurora Background -->
+    <div class="aurora-bg"></div>
+
+    <!-- Star Field -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="star" style="top: 10%; left: 15%; animation-delay: 0s;"></div>
+        <div class="star" style="top: 20%; left: 85%; animation-delay: 0.5s;"></div>
+        <div class="star" style="top: 35%; left: 5%; animation-delay: 1s;"></div>
+        <div class="star" style="top: 45%; left: 95%; animation-delay: 1.5s;"></div>
+        <div class="star" style="top: 60%; left: 25%; animation-delay: 2s;"></div>
+        <div class="star" style="top: 75%; left: 75%; animation-delay: 0.3s;"></div>
+        <div class="star" style="top: 85%; left: 40%; animation-delay: 0.8s;"></div>
+        <div class="star" style="top: 15%; left: 60%; animation-delay: 1.3s;"></div>
+        <div class="star" style="top: 55%; left: 50%; animation-delay: 1.8s;"></div>
+        <div class="star" style="top: 90%; left: 10%; animation-delay: 2.3s;"></div>
+        
+        <div class="absolute top-10 left-10 w-72 h-72 bg-aurora-gold/5 rounded-full blur-3xl float-aurora"></div>
+        <div class="absolute bottom-20 right-10 w-80 h-80 bg-aurora-plasma/5 rounded-full blur-3xl float-cosmic"></div>
+        <div class="absolute top-1/2 left-1/3 w-64 h-64 bg-aurora-amber/5 rounded-full blur-3xl float-plasma"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-black/70 border-b border-aurora-gold/20">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-aurora-gold to-aurora-plasma flex items-center justify-center gold-glow">
+                        <i class="fa-solid fa-crown text-xl text-black"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-orbitron text-lg font-bold text-gold-glow">IA PARA ADMINISTRADORES</h1>
+                        <p class="text-xs text-aurora-gold/70 font-rajdhani">Unidad 4 de 4 - Final</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#objetivos" class="text-sm font-rajdhani hover:text-aurora-gold transition">Objetivos</a>
+                    <a href="#lecciones" class="text-sm font-rajdhani hover:text-aurora-gold transition">Lecciones</a>
+                    <a href="#proyecto" class="text-sm font-rajdhani hover:text-aurora-gold transition">Proyecto Final</a>
+                    <div class="px-4 py-2 rounded-full bg-aurora-gold/10 border border-aurora-gold/30 text-aurora-gold text-xs font-orbitron gold-glow">
+                        SEMANA 4
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-[350px] h-[350px] border border-aurora-gold/30 rounded-full animate-pulse"></div>
+            <div class="absolute w-[450px] h-[450px] border border-aurora-amber/20 rounded-full"></div>
+            <div class="absolute w-[550px] h-[550px] border border-aurora-copper/10 rounded-full"></div>
+            <div class="absolute w-[650px] h-[650px] border border-aurora-plasma/5 rounded-full"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
+            <div class="text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-aurora-gold/10 border border-aurora-gold/30 mb-6">
+                    <i class="fa-solid fa-trophy text-aurora-gold"></i>
+                    <span class="text-xs font-orbitron text-aurora-gold">UNIDAD FINAL</span>
+                </div>
+                
+                <h1 class="font-orbitron text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                    <span class="text-white">Integracion Total</span><br>
+                    <span class="text-gold-glow text-aurora-gold">y Proyecto Final</span>
+                </h1>
+                
+                <p class="text-lg text-gray-400 font-rajdhani mb-8 max-w-lg">
+                    Llego el momento de consolidar todo lo aprendido. Construye tu ecosistema personal de productividad con IA y presenta tu proyecto final.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="#lecciones" class="px-8 py-4 rounded-xl bg-gradient-to-r from-aurora-gold to-aurora-amber text-black font-orbitron font-bold text-sm transition-all hover:shadow-lg hover:shadow-aurora-gold/30">
+                        <i class="fa-solid fa-rocket mr-2"></i> COMENZAR UNIDAD
+                    </a>
+                    <a href="#proyecto" class="px-8 py-4 rounded-xl border border-aurora-gold/30 text-aurora-gold font-orbitron text-sm hover:bg-aurora-gold/10 transition-all">
+                        <i class="fa-solid fa-file-export mr-2"></i> VER PROYECTO
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-4 gap-4 mt-12 pt-8 border-t border-white/10">
+                    <div>
+                        <p class="font-orbitron text-2xl font-bold text-aurora-gold">4</p>
+                        <p class="text-[10px] text-gray-500 font-rajdhani">Unidades</p>
+                    </div>
+                    <div>
+                        <p class="font-orbitron text-2xl font-bold text-aurora-amber">16</p>
+                        <p class="text-[10px] text-gray-500 font-rajdhani">Lecciones</p>
+                    </div>
+                    <div>
+                        <p class="font-orbitron text-2xl font-bold text-aurora-plasma">40</p>
+                        <p class="text-[10px] text-gray-500 font-rajdhani">Preguntas</p>
+                    </div>
+                    <div>
+                        <p class="font-orbitron text-2xl font-bold text-aurora-copper">1</p>
+                        <p class="text-[10px] text-gray-500 font-rajdhani">Proyecto</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative float-cosmic">
+                <div class="crown-frame p-1">
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=500&fit=crop" 
+                         alt="Integracion Total IA" 
+                         class="rounded-3xl w-full h-auto object-cover"
+                         style="filter: contrast(1.1) saturate(1.1);">
+                </div>
+                
+                <div class="absolute -top-4 -right-4 px-4 py-2 rounded-xl bg-black border border-aurora-gold/50 float-plasma">
+                    <p class="text-xs font-orbitron text-aurora-gold">ECOSISTEMA IA</p>
+                </div>
+                
+                <div class="absolute -bottom-6 -left-6 w-24 h-24 rounded-2xl bg-gradient-to-br from-aurora-gold/20 to-aurora-plasma/20 border border-aurora-gold/30 flex items-center justify-center backdrop-blur-xl float-aurora">
+                    <i class="fa-solid fa-layer-group text-4xl text-aurora-gold"></i>
+                </div>
+
+                <!-- Achievement Badge -->
+                <div class="absolute top-1/2 -right-4 transform -translate-y-1/2 achievement">
+                    <i class="fa-solid fa-medal text-aurora-gold"></i>
+                    <span class="text-xs font-orbitron text-aurora-gold">FINAL</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+            <p class="text-xs text-gray-500 font-rajdhani">Scroll para continuar</p>
+            <i class="fa-solid fa-chevron-down text-aurora-gold"></i>
+        </div>
+    </header>
+
+    <!-- Objetivos -->
+    <section id="objetivos" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <p class="text-aurora-gold font-orbitron text-xs tracking-[0.3em] mb-4">OBJETIVOS DE APRENDIZAJE</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        Que lograras en esta <span class="text-aurora-gold">unidad final</span>
+                    </h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="cosmic-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-aurora-gold/20 border border-aurora-gold/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-cubes text-2xl text-aurora-gold"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Integrar Herramientas</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Todas las herramientas y tecnicas aprendidas</p>
+                    </div>
+
+                    <div class="cosmic-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-aurora-amber/20 border border-aurora-amber/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-swatchbook text-2xl text-aurora-amber"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Stack Personalizado</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Tu ecosistema de productividad con IA</p>
+                    </div>
+
+                    <div class="cosmic-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-aurora-plasma/20 border border-aurora-plasma/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-diagram-project text-2xl text-aurora-plasma"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Flujos End-to-End</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Workflows completos de trabajo</p>
+                    </div>
+
+                    <div class="cosmic-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-aurora-copper/20 border border-aurora-copper/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-file-signature text-2xl text-aurora-copper"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Proyecto Final</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Aplicacion real a tu contexto laboral</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lecciones -->
+    <section id="lecciones" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <p class="text-aurora-amber font-orbitron text-xs tracking-[0.3em] mb-4">CONTENIDO FINAL</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        Tu <span class="text-aurora-gold">Stack Tecnologico</span> Personalizado
+                    </h2>
+                </div>
+
+                <!-- Leccion 4.1 -->
+                <div class="mb-12">
+                    <div class="crown-frame rounded-3xl overflow-hidden">
+                        <div class="bg-black/95 p-8">
+                            <div class="flex items-start gap-6 mb-6">
+                                <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-aurora-gold to-aurora-amber flex items-center justify-center gold-glow">
+                                    <span class="font-orbitron text-xl font-bold text-black">4.1</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-xl md:text-2xl font-bold mb-2">
+                                        Que es un "Stack" Tecnologico?
+                                    </h3>
+                                    <p class="text-sm text-gray-400 font-rajdhani">
+                                        Es el conjunto de herramientas que usas dia a dia, integradas para maxima eficiencia. El Stack del Administrador IA incluye componentes especificos.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Stack Components -->
+                            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                                <div class="stack-layer">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-10 h-10 rounded-lg bg-aurora-gold/20 flex items-center justify-center">
+                                            <i class="fa-solid fa-robot text-aurora-gold"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-orbitron text-xs font-bold text-aurora-gold">NUCLEO</p>
+                                            <p class="text-[10px] text-gray-400">Asistente IA Principal</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-300">ChatGPT Plus / Claude Pro / Gemini Advanced</p>
+                                </div>
+
+                                <div class="stack-layer">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-10 h-10 rounded-lg bg-aurora-amber/20 flex items-center justify-center">
+                                            <i class="fa-solid fa-list-check text-aurora-amber"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-orbitron text-xs font-bold text-aurora-amber">GESTION</p>
+                                            <p class="text-[10px] text-gray-400">Tareas y Proyectos</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-300">Notion / Todoist / Asana / Monday</p>
+                                </div>
+
+                                <div class="stack-layer">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-10 h-10 rounded-lg bg-aurora-plasma/20 flex items-center justify-center">
+                                            <i class="fa-solid fa-envelope text-aurora-plasma"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-orbitron text-xs font-bold text-aurora-plasma">COMUNICACION</p>
+                                            <p class="text-[10px] text-gray-400">Correo y Mensajeria</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-300">Gmail + Gemini / Outlook + Copilot / Slack</p>
+                                </div>
+
+                                <div class="stack-layer">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-10 h-10 rounded-lg bg-aurora-copper/20 flex items-center justify-center">
+                                            <i class="fa-solid fa-file-lines text-aurora-copper"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-orbitron text-xs font-bold text-aurora-copper">DOCUMENTOS</p>
+                                            <p class="text-[10px] text-gray-400">Creacion y Edicion</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-300">Notion AI / Google Docs / Office 365</p>
+                                </div>
+
+                                <div class="stack-layer">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-10 h-10 rounded-lg bg-aurora-gold/20 flex items-center justify-center">
+                                            <i class="fa-solid fa-bolt text-aurora-gold"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-orbitron text-xs font-bold text-aurora-gold">AUTOMATIZACION</p>
+                                            <p class="text-[10px] text-gray-400">Workflows</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-300">Zapier / Make / Power Automate</p>
+                                </div>
+
+                                <div class="stack-layer">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-10 h-10 rounded-lg bg-aurora-amber/20 flex items-center justify-center">
+                                            <i class="fa-solid fa-chart-pie text-aurora-amber"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-orbitron text-xs font-bold text-aurora-amber">ANALISIS</p>
+                                            <p class="text-[10px] text-gray-400">Datos e Insights</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-300">ChatGPT Code Interpreter / Julius AI</p>
+                                </div>
+                            </div>
+
+                            <!-- Profiles -->
+                            <h4 class="font-orbitron text-lg font-bold text-aurora-gold mb-6">
+                                <i class="fa-solid fa-user-astronaut mr-2"></i>Perfiles de Stack Recomendados
+                            </h4>
+
+                            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                                <!-- Perfil 1 -->
+                                <div class="profile-card p-6">
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center">
+                                            <i class="fa-brands fa-google text-xl text-white"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-orbitron text-sm font-bold">PERFIL 1</p>
+                                            <p class="text-xs text-gray-400">Administrador Google-centricos</p>
+                                        </div>
+                                    </div>
+                                    <ul class="space-y-2 text-xs text-gray-300">
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Nucleo:</strong> Gemini Advanced</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Workspace:</strong> Google Docs, Sheets, Gmail</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Gestion:</strong> Notion para proyectos</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Automatizacion:</strong> Zapier</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Reuniones:</strong> Otter.ai</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Perfil 2 -->
+                                <div class="profile-card p-6">
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                                            <i class="fa-brands fa-microsoft text-xl text-white"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-orbitron text-sm font-bold">PERFIL 2</p>
+                                            <p class="text-xs text-gray-400">Administrador Microsoft-centricos</p>
+                                        </div>
+                                    </div>
+                                    <ul class="space-y-2 text-xs text-gray-300">
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Nucleo:</strong> Microsoft Copilot</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Workspace:</strong> Office 365 (Word, Excel, Outlook)</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Gestion:</strong> Microsoft Planner/Project</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Automatizacion:</strong> Power Automate</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Reuniones:</strong> Teams con transcripcion nativa</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Perfil 3 -->
+                                <div class="profile-card p-6">
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center">
+                                            <i class="fa-solid fa-rocket text-xl text-white"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-orbitron text-sm font-bold">PERFIL 3</p>
+                                            <p class="text-xs text-gray-400">Administrador Startup/Tech</p>
+                                        </div>
+                                    </div>
+                                    <ul class="space-y-2 text-xs text-gray-300">
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Nucleo:</strong> ChatGPT Plus</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Todo:</strong> Notion (todo en uno)</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Comunicacion:</strong> Slack + integraciones</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Automatizacion:</strong> Make (complejo)</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Asincrono:</strong> Loom para videos</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Perfil 4 -->
+                                <div class="profile-card p-6">
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-aurora-gold to-aurora-amber flex items-center justify-center">
+                                            <i class="fa-solid fa-piggy-bank text-xl text-black"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-orbitron text-sm font-bold">PERFIL 4</p>
+                                            <p class="text-xs text-gray-400">Presupuesto Limitado</p>
+                                        </div>
+                                    </div>
+                                    <ul class="space-y-2 text-xs text-gray-300">
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Nucleo:</strong> ChatGPT gratuito + Claude gratuito</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Workspace:</strong> Google Workspace gratuito</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Gestion:</strong> Notion gratuito / Trello</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Automatizacion:</strong> Zapier gratis (limitado)</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fa-solid fa-check text-aurora-plasma"></i>
+                                            <span><strong class="text-aurora-gold">Extra:</strong> Gemini en Gmail/Docs</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Decision Matrix -->
+                            <div class="p-6 rounded-xl bg-gradient-to-r from-aurora-gold/5 to-aurora-plasma/5 border border-aurora-gold/20">
+                                <h4 class="font-orbitron text-sm font-bold text-aurora-gold mb-4">
+                                    <i class="fa-solid fa-table-cells mr-2"></i>MATRIZ DE DECISION: QUE STACK ES PARA TI?
+                                </h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead>
+                                            <tr class="border-b border-white/10">
+                                                <th class="text-left p-3 font-orbitron text-aurora-gold">Criterio</th>
+                                                <th class="text-center p-3 font-orbitron text-aurora-amber">Google</th>
+                                                <th class="text-center p-3 font-orbitron text-aurora-copper">Microsoft</th>
+                                                <th class="text-center p-3 font-orbitron text-aurora-plasma">Startup</th>
+                                                <th class="text-center p-3 font-orbitron text-gray-400">Limitado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="font-rajdhani text-gray-300">
+                                            <tr class="border-b border-white/5">
+                                                <td class="p-3">Costo mensual</td>
+                                                <td class="p-3 text-center">~$30</td>
+                                                <td class="p-3 text-center">~$35</td>
+                                                <td class="p-3 text-center">~$40</td>
+                                                <td class="p-3 text-center">$0</td>
+                                            </tr>
+                                            <tr class="border-b border-white/5">
+                                                <td class="p-3">Curva de aprendizaje</td>
+                                                <td class="p-3 text-center">Baja</td>
+                                                <td class="p-3 text-center">Media</td>
+                                                <td class="p-3 text-center">Media-Alta</td>
+                                                <td class="p-3 text-center">Baja</td>
+                                            </tr>
+                                            <tr class="border-b border-white/5">
+                                                <td class="p-3">Integraciones</td>
+                                                <td class="p-3 text-center">Excelentes</td>
+                                                <td class="p-3 text-center">Excelentes</td>
+                                                <td class="p-3 text-center">Muy buenas</td>
+                                                <td class="p-3 text-center">Basicas</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3">Mejor para</td>
+                                                <td class="p-3 text-center">Colaboracion</td>
+                                                <td class="p-3 text-center">Enterprise</td>
+                                                <td class="p-3 text-center">Agilidad</td>
+                                                <td class="p-3 text-center">Iniciar</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Proyecto Final -->
+    <section id="proyecto" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <p class="text-aurora-plasma font-orbitron text-xs tracking-[0.3em] mb-4">PROYECTO FINAL</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        Tu <span class="text-aurora-gold">Transformacion Digital</span>
+                    </h2>
+                    <p class="text-gray-400 font-rajdhani mt-4">Aplica todo lo aprendido en un proyecto real de tu contexto laboral</p>
+                </div>
+
+                <div class="crown-frame rounded-3xl overflow-hidden">
+                    <div class="bg-black/95 p-8">
+                        <!-- Header -->
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-aurora-gold to-aurora-plasma flex items-center justify-center gold-glow">
+                                <i class="fa-solid fa-graduation-cap text-3xl text-black"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-orbitron text-2xl font-bold">Proyecto de Integracion IA</h3>
+                                <p class="text-sm text-gray-400 font-rajdhani">Demuestra tu dominio de la IA aplicada a la administracion</p>
+                            </div>
+                        </div>
+
+                        <!-- Instrucciones -->
+                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                            <div class="p-5 rounded-xl bg-aurora-gold/10 border border-aurora-gold/30">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <div class="w-8 h-8 rounded-lg bg-aurora-gold/20 flex items-center justify-center">
+                                        <span class="font-orbitron text-sm font-bold text-aurora-gold">1</span>
+                                    </div>
+                                    <h4 class="font-orbitron text-sm font-bold text-aurora-gold">DIAGNOSTICO (25%)</h4>
+                                </div>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>• Identifica 3 procesos actuales</li>
+                                    <li>• Analiza cuellos de botella</li>
+                                    <li>• Cuantifica tiempo invertido</li>
+                                    <li>• Prioriza por impacto</li>
+                                </ul>
+                            </div>
+
+                            <div class="p-5 rounded-xl bg-aurora-amber/10 border border-aurora-amber/30">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <div class="w-8 h-8 rounded-lg bg-aurora-amber/20 flex items-center justify-center">
+                                        <span class="font-orbitron text-sm font-bold text-aurora-amber">2</span>
+                                    </div>
+                                    <h4 class="font-orbitron text-sm font-bold text-aurora-amber">SOLUCION (35%)</h4>
+                                </div>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>• Define tu Stack tecnologico</li>
+                                    <li>• Crea 5 prompts profesionales</li>
+                                    <li>• Disena 2 flujos automatizados</li>
+                                    <li>• Documenta implementacion</li>
+                                </ul>
+                            </div>
+
+                            <div class="p-5 rounded-xl bg-aurora-plasma/10 border border-aurora-plasma/30">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <div class="w-8 h-8 rounded-lg bg-aurora-plasma/20 flex items-center justify-center">
+                                        <span class="font-orbitron text-sm font-bold text-aurora-plasma">3</span>
+                                    </div>
+                                    <h4 class="font-orbitron text-sm font-bold text-aurora-plasma">RESULTADOS (40%)</h4>
+                                </div>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>• Medicion de tiempo ahorrado</li>
+                                    <li>• Evidencias de implementacion</li>
+                                    <li>• Calculo de ROI proyectado</li>
+                                    <li>• Plan de escalamiento</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Formato Entrega -->
+                        <div class="p-6 rounded-xl bg-white/5 border border-white/10 mb-8">
+                            <h4 class="font-orbitron text-sm font-bold text-aurora-gold mb-4">
+                                <i class="fa-solid fa-file-export mr-2"></i>FORMATO DE ENTREGA
+                            </h4>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <p class="text-xs text-gray-400 mb-2">Documento principal:</p>
+                                    <ul class="text-xs text-gray-300 space-y-1">
+                                        <li>• PDF o Google Docs</li>
+                                        <li>• Extension: 5-8 paginas</li>
+                                        <li>• Incluir capturas de pantalla</li>
+                                        <li>• Anexos: prompts, flujos</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 mb-2">Evidencias adicionales:</p>
+                                    <ul class="text-xs text-gray-300 space-y-1">
+                                        <li>• Screenshots de herramientas configuradas</li>
+                                        <li>• Ejemplos de prompts ejecutados</li>
+                                        <li>• Diagramas de flujos implementados</li>
+                                        <li>• Comparativas antes/despues</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Criterios Evaluacion -->
+                        <div class="p-6 rounded-xl bg-gradient-to-r from-aurora-gold/5 to-aurora-plasma/5 border border-aurora-gold/20">
+                            <h4 class="font-orbitron text-sm font-bold text-aurora-gold mb-4">
+                                <i class="fa-solid fa-star mr-2"></i>CRITERIOS DE EVALUACION
+                            </h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-gray-300">Aplicacion practica</span>
+                                        <span class="text-aurora-gold">25%</span>
+                                    </div>
+                                    <div class="progress-gold h-2">
+                                        <div class="progress-gold-fill" style="width: 25%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-gray-300">Calidad de prompts</span>
+                                        <span class="text-aurora-amber">20%</span>
+                                    </div>
+                                    <div class="progress-gold h-2">
+                                        <div class="progress-gold-fill" style="width: 20%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-gray-300">Viabilidad de flujos</span>
+                                        <span class="text-aurora-plasma">20%</span>
+                                    </div>
+                                    <div class="progress-gold h-2">
+                                        <div class="progress-gold-fill" style="width: 20%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-gray-300">Calculo de ROI</span>
+                                        <span class="text-aurora-copper">15%</span>
+                                    </div>
+                                    <div class="progress-gold h-2">
+                                        <div class="progress-gold-fill" style="width: 15%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-gray-300">Presentacion profesional</span>
+                                        <span class="text-gray-400">10%</span>
+                                    </div>
+                                    <div class="progress-gold h-2">
+                                        <div class="progress-gold-fill" style="width: 10%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-gray-300">Creatividad e innovacion</span>
+                                        <span class="text-gray-400">10%</span>
+                                    </div>
+                                    <div class="progress-gold h-2">
+                                        <div class="progress-gold-fill" style="width: 10%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Evaluacion Final -->
+    <section id="evaluacion" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <p class="text-aurora-copper font-orbitron text-xs tracking-[0.3em] mb-4">EVALUACION FINAL</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        Cuestionario <span class="text-aurora-gold">Unidad 4</span>
+                    </h2>
+                    <p class="text-gray-400 font-rajdhani mt-4">10 preguntas - 70% para aprobacion</p>
+                </div>
+
+                <div class="crown-frame rounded-3xl overflow-hidden">
+                    <div class="bg-black/95 p-8">
+                        <div class="mb-8">
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="text-gray-400">Progreso</span>
+                                <span class="text-aurora-gold font-orbitron" id="progress-text">0/10</span>
+                            </div>
+                            <div class="progress-gold h-2">
+                                <div class="progress-gold-fill" id="progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div id="quiz-container"></div>
+
+                        <div id="quiz-results" class="hidden text-center py-12">
+                            <div class="w-36 h-36 mx-auto mb-6 rounded-full bg-gradient-to-br from-aurora-gold to-aurora-plasma flex items-center justify-center gold-glow">
+                                <i class="fa-solid fa-trophy text-5xl text-black" id="result-icon"></i>
+                            </div>
+                            <h3 class="font-orbitron text-2xl font-bold mb-2" id="result-title">Resultado</h3>
+                            <p class="text-gray-400 font-rajdhani mb-6" id="result-message">Mensaje</p>
+                            <div id="certificate-section" class="hidden mb-6 p-4 rounded-xl bg-aurora-gold/10 border border-aurora-gold/30">
+                                <p class="font-orbitron text-sm text-aurora-gold mb-2">Has completado el curso exitosamente!</p>
+                                <button onclick="alert('Certificado generado!')" class="px-6 py-3 rounded-xl bg-aurora-gold text-black font-orbitron text-xs">
+                                    <i class="fa-solid fa-certificate mr-2"></i> GENERAR CERTIFICADO
+                                </button>
+                            </div>
+                            <button onclick="resetQuiz()" class="px-8 py-4 rounded-xl bg-gradient-to-r from-aurora-gold to-aurora-amber text-black font-orbitron font-bold text-sm">
+                                <i class="fa-solid fa-rotate mr-2"></i> REINTENTAR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resumen del Curso -->
+    <section class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <p class="text-aurora-plasma font-orbitron text-xs tracking-[0.3em] mb-4">RESUMEN</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        Lo que <span class="text-aurora-gold">aprendiste</span>
+                    </h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="cosmic-card rounded-2xl p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                                <span class="font-orbitron font-bold text-cyan-400">U1</span>
+                            </div>
+                            <h4 class="font-orbitron text-sm font-bold">Fundamentos</h4>
+                        </div>
+                        <ul class="text-xs text-gray-400 space-y-2">
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-cyan-400"></i>
+                                Que es la IA
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-cyan-400"></i>
+                                Herramientas esenciales
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-cyan-400"></i>
+                                Prompt engineering
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-cyan-400"></i>
+                                Configuracion inicial
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="cosmic-card rounded-2xl p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                                <span class="font-orbitron font-bold text-green-400">U2</span>
+                            </div>
+                            <h4 class="font-orbitron text-sm font-bold">Automatizacion</h4>
+                        </div>
+                        <ul class="text-xs text-gray-400 space-y-2">
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-green-400"></i>
+                                Correos automaticos
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-green-400"></i>
+                                Generacion de documentos
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-green-400"></i>
+                                Analisis de datos
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-green-400"></i>
+                                Workflows automatizados
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="cosmic-card rounded-2xl p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                                <span class="font-orbitron font-bold text-amber-400">U3</span>
+                            </div>
+                            <h4 class="font-orbitron text-sm font-bold">Decisiones</h4>
+                        </div>
+                        <ul class="text-xs text-gray-400 space-y-2">
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-amber-400"></i>
+                                Consultoria estrategica
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-amber-400"></i>
+                                Gestion de proyectos
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-amber-400"></i>
+                                Resolucion de problemas
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-amber-400"></i>
+                                Etica en IA
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="cosmic-card rounded-2xl p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-aurora-gold/20 flex items-center justify-center">
+                                <span class="font-orbitron font-bold text-aurora-gold">U4</span>
+                            </div>
+                            <h4 class="font-orbitron text-sm font-bold">Integracion</h4>
+                        </div>
+                        <ul class="text-xs text-gray-400 space-y-2">
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-aurora-gold"></i>
+                                Stack tecnologico
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-aurora-gold"></i>
+                                Perfiles de usuario
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-aurora-gold"></i>
+                                Ecosistema personal
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-aurora-gold"></i>
+                                Proyecto final
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center">
+                <div class="flex items-center justify-center gap-4 mb-6">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-aurora-gold to-aurora-plasma flex items-center justify-center gold-glow">
+                        <i class="fa-solid fa-award text-2xl text-black"></i>
+                    </div>
+                    <div class="text-left">
+                        <p class="font-orbitron text-lg font-bold text-gold-glow">CURSO COMPLETADO</p>
+                        <p class="text-xs text-gray-500 font-rajdhani">IA para Administradores - 4 Unidades</p>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-400 font-rajdhani mb-4">
+                    Felicidades por completar el curso "IA para Administradores"
+                </p>
+                <p class="text-xs text-gray-500 font-rajdhani">
+                    Recuerda entregar tu proyecto final para obtener tu certificado
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chat Bot -->
+    <button onclick="toggleChat()" class="bot-trigger" aria-label="Abrir asistente virtual">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" alt="Profe Virtual IA">
+    </button>
+
+    <div id="chat-window" class="w-[90vw] md:w-[420px] bg-black rounded-[2rem] shadow-2xl border border-aurora-gold/20 overflow-hidden">
+        <div class="bg-gradient-to-r from-aurora-gold to-aurora-plasma p-5 text-black flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-black/20 rounded-full flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-sm font-orbitron tracking-tight">PROFE VIRTUAL</p>
+                    <p class="text-[9px] opacity-80 font-rajdhani">Asistente Unidad 4</p>
+                </div>
+            </div>
+            <button onclick="toggleChat()" class="hover:rotate-90 transition duration-300" aria-label="Cerrar chat">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+        </div>
+        
+        <div id="chat-content" class="h-[350px] overflow-y-auto p-4 space-y-3 bg-black/90 text-xs">
+            <div class="bg-white/5 p-3 rounded-2xl rounded-tl-none mr-8 text-slate-300 border border-white/5">
+                Hola! Soy tu Profe Virtual para la <strong class="text-aurora-gold">Unidad 4: Integracion Total</strong>. Puedo ayudarte con tu stack tecnologico, perfiles de configuracion, proyecto final y consultas generales del curso. En que puedo ayudarte?
+            </div>
+        </div>
+
+        <div id="chat-input-area" class="p-4 bg-black border-t border-white/5 flex gap-2">
+            <input type="text" id="user-input" placeholder="Escribe tu pregunta..." 
+                   class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-aurora-gold text-white text-sm font-rajdhani"
+                   aria-label="Escribe tu mensaje">
+            <button onclick="handleChat()" class="bg-gradient-to-r from-aurora-gold to-aurora-plasma text-white w-11 h-11 rounded-xl flex items-center justify-center shadow-lg hover:opacity-90 transition" aria-label="Enviar mensaje">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Knowledge Base Unit 4
+        const knowledgeBase = {
+            'stack': 'Un Stack Tecnologico es el conjunto de herramientas que usas dia a dia, integradas para maxima eficiencia. Los componentes principales son:\n\n1. NUCLEO: Asistente IA principal (ChatGPT, Claude, Gemini)\n2. GESTION: Tareas y proyectos (Notion, Asana)\n3. COMUNICACION: Correo y mensajeria\n4. DOCUMENTOS: Creacion y edicion\n5. AUTOMATIZACION: Workflows (Zapier, Make)\n6. ANALISIS: Datos e insights',
+            'perfil google': 'PERFIL GOOGLE-CENTRICO:\n\n- Nucleo: Gemini Advanced\n- Workspace: Google Docs, Sheets, Gmail\n- Gestion: Notion para proyectos\n- Automatizacion: Zapier\n- Reuniones: Otter.ai\n\nIdeal para usuarios de Google Workspace. Costo aprox: $30/mes',
+            'perfil microsoft': 'PERFIL MICROSOFT-CENTRICO:\n\n- Nucleo: Microsoft Copilot\n- Workspace: Office 365 (Word, Excel, Outlook)\n- Gestion: Microsoft Planner/Project\n- Automatizacion: Power Automate\n- Reuniones: Teams con transcripcion nativa\n\nIdeal para empresas Enterprise. Costo aprox: $35/mes',
+            'perfil startup': 'PERFIL STARTUP/TECH:\n\n- Nucleo: ChatGPT Plus\n- Todo: Notion (todo en uno)\n- Comunicacion: Slack + integraciones\n- Automatizacion: Make (complejo)\n- Asincrono: Loom para videos\n\nIdeal para equipos agiles. Costo aprox: $40/mes',
+            'perfil limitado': 'PERFIL PRESUPUESTO LIMITADO:\n\n- Nucleo: ChatGPT gratuito + Claude gratuito\n- Workspace: Google Workspace gratuito\n- Gestion: Notion gratuito / Trello\n- Automatizacion: Zapier gratis (limitado)\n- Extra: Gemini en Gmail/Docs\n\nCosto: $0 - Ideal para comenzar',
+            'proyecto': 'El PROYECTO FINAL consta de 3 partes:\n\n1. DIAGNOSTICO (25%)\n- Identifica 3 procesos actuales\n- Analiza cuellos de botella\n- Cuantifica tiempo invertido\n\n2. SOLUCION (35%)\n- Define tu Stack tecnologico\n- Crea 5 prompts profesionales\n- Disena 2 flujos automatizados\n\n3. RESULTADOS (40%)\n- Medicion de tiempo ahorrado\n- Calculo de ROI proyectado\n- Plan de escalamiento',
+            'roi': 'Para calcular el ROI de tu proyecto:\n\n1. Tiempo ahorrado por tarea (min/dia)\n2. Dias laborales por ano (250 aprox)\n3. Costo horario de tu tiempo\n\nEjemplo:\n- 30 min/dia ahorrados\n= 125 horas/ano\n= Si ganas $30/hora\n= $3,750/ano ahorrados\n\nROI = (Beneficios - Costos) / Costos x 100',
+            'certificado': 'Para obtener tu certificado debes:\n\n1. Completar las 4 unidades del curso\n2. Aprobar los 4 cuestionarios (70% minimo)\n3. Entregar el Proyecto Final\n4. Esperar revision (3-5 dias habiles)\n\nEl certificado incluye tu nombre, nombre del curso, fecha y firma digital.',
+            'zapier make': 'Diferencias entre Zapier y Make:\n\nZAPIER:\n- Mas facil de usar\n- 5000+ integraciones\n- Ideal para principiantes\n- Plan gratis: 100 tareas/mes\n\nMAKE (Integromat):\n- Mas visual y potente\n- Logica compleja\n- Curva de aprendizaje media\n- Plan gratis: 1000 operaciones\n\nRecomendacion: Empieza con Zapier, migra a Make si necesitas mas complejidad.',
+            'notion': 'Notion es ideal para administradores porque combina:\n\n- Base de datos de tareas\n- Documentacion\n- Wikis de equipo\n- Gestion de proyectos\n- Notion AI integrado\n\nTemplates utiles:\n- Panel de control administrativo\n- Base de datos de prompts\n- Seguimiento de tareas con IA\n- Generador de reportes',
+            'integraciones': 'Integraciones poderosas recomendadas:\n\n1. Gmail + ChatGPT: Respuestas inteligentes\n2. Notion + Zapier: Automatizacion de tareas\n3. Slack + IA: Resumenes de canales\n4. Calendar + IA: Programacion inteligente\n5. Drive + IA: Organizacion automatica\n\nElige segun tu ecosistema (Google o Microsoft).',
+            'siguiente paso': 'Despues del curso, te recomiendo:\n\n1. SEMANA 1: Implementa tu Stack basico\n2. SEMANA 2: Crea tus primeros 10 prompts\n3. SEMANA 3: Automatiza 1 proceso completo\n4. SEMANA 4: Mide resultados y ajusta\n\nRecursos adicionales:\n- Comunidades de IA en Discord/Reddit\n- Newsletters: The AI Times, Superhuman\n- Cursos avanzados: Prompt Engineering, Automation'
+        };
+
+        function toggleChat() { 
+            document.getElementById('chat-window').classList.toggle('active'); 
+        }
+
+        function appendMsg(text, isUser = false) {
+            const content = document.getElementById('chat-content');
+            const msg = document.createElement('div');
+            
+            if (isUser) {
+                msg.className = "bg-gradient-to-r from-aurora-gold to-aurora-plasma text-white p-3 rounded-2xl rounded-tr-none ml-8 text-xs shadow-md font-rajdhani";
+            } else {
+                msg.className = "bg-white/5 text-slate-300 p-3 rounded-2xl rounded-tl-none mr-8 text-xs border border-white/5 whitespace-pre-line";
+            }
+            
+            msg.textContent = text;
+            content.appendChild(msg);
+            content.scrollTop = content.scrollHeight;
+        }
+
+        function findBestMatch(input) {
+            const inputLower = input.toLowerCase();
+            let bestMatch = null;
+            let highestScore = 0;
+            
+            for (const [key, value] of Object.entries(knowledgeBase)) {
+                const keywords = key.split(' ');
+                let score = 0;
+                keywords.forEach(keyword => {
+                    if (inputLower.includes(keyword)) {
+                        score++;
+                    }
+                });
+                if (score > highestScore) {
+                    highestScore = score;
+                    bestMatch = value;
+                }
+            }
+            
+            return highestScore > 0 ? bestMatch : null;
+        }
+
+        function handleChat() {
+            const input = document.getElementById('user-input');
+            const val = input.value.trim();
+            if(!val) return;
+            
+            appendMsg(val, true);
+            input.value = '';
+
+            setTimeout(() => {
+                const response = findBestMatch(val);
+                if (response) {
+                    appendMsg(response);
+                } else {
+                    appendMsg('No tengo informacion especifica sobre esa pregunta. Prueba con palabras clave como: stack, perfil google, perfil microsoft, perfil startup, perfil limitado, proyecto, ROI, certificado, zapier, notion, integraciones, siguiente paso.');
+                }
+            }, 800);
+        }
+
+        document.getElementById('user-input').addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') handleChat(); 
+        });
+
+        // Quiz Data Unit 4
+        const quizData = [
+            {
+                question: 'Un Stack Tecnologico es:',
+                options: ['Una sola herramienta de IA', 'El conjunto de herramientas integradas para trabajo diario', 'Un tipo de programacion', 'Un sistema operativo'],
+                correct: 1
+            },
+            {
+                question: 'Cual es el componente "Nucleo" del Stack del Administrador IA?',
+                options: ['Microsoft Excel', 'Asistente IA principal (ChatGPT, Claude, Gemini)', 'Zapier', 'Gmail'],
+                correct: 1
+            },
+            {
+                question: 'Para un administrador con presupuesto limitado, la mejor opcion es:',
+                options: ['ChatGPT Plus + Copilot', 'ChatGPT gratuito + Claude gratuito + Notion gratuito', 'Solo Gemini Advanced', 'Herramientas pagas'],
+                correct: 1
+            },
+            {
+                question: 'Power Automate es la herramienta de automatizacion ideal para:',
+                options: ['Usuarios de Google Workspace', 'Ecosistema Microsoft', 'Startups', 'Presupuesto limitado'],
+                correct: 1
+            },
+            {
+                question: 'El Proyecto Final incluye (en orden):',
+                options: ['Solucion, Diagnostico, Resultados', 'Diagnostico, Solucion, Resultados', 'Resultados, Diagnostico, Solucion', 'Solo Diagnostico'],
+                correct: 1
+            },
+            {
+                question: 'Que porcentaje vale la seccion "Solucion" del Proyecto Final?',
+                options: ['25%', '35%', '40%', '50%'],
+                correct: 1
+            },
+            {
+                question: 'Make (Integromat) se diferencia de Zapier en que:',
+                options: ['Es menos potente', 'Es mas visual y permite logica compleja', 'No tiene plan gratuito', 'Solo funciona con Google'],
+                correct: 1
+            },
+            {
+                question: 'El ROI de automatizar una tarea de 30 min/dia a $30/hora es:',
+                options: ['$750/ano', '$1,500/ano', '$3,750/ano', '$7,500/ano'],
+                correct: 2
+            },
+            {
+                question: 'Para obtener el certificado del curso necesitas:',
+                options: ['Solo ver los videos', 'Completar las 4 unidades, aprobar cuestionarios y entregar proyecto', 'Solo el proyecto final', 'Pagar extra'],
+                correct: 1
+            },
+            {
+                question: 'Notion es recomendado en todos los perfiles porque:',
+                options: ['Es el mas barato', 'Combina tareas, documentacion y gestion con IA integrada', 'Solo sirve para correos', 'Es obligatorio'],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function renderQuestion() {
+            const container = document.getElementById('quiz-container');
+            const q = quizData[currentQuestion];
+            
+            container.innerHTML = `
+                <div class="mb-6">
+                    <p class="font-orbitron text-xs text-aurora-gold mb-2">PREGUNTA ${currentQuestion + 1} DE 10</p>
+                    <h3 class="text-lg font-rajdhani font-bold text-white">${q.question}</h3>
+                </div>
+                <div class="space-y-3">
+                    ${q.options.map((opt, i) => `
+                        <button onclick="selectAnswer(${i})" class="w-full text-left p-4 rounded-xl bg-white/5 border border-white/10 hover:border-aurora-gold/50 hover:bg-aurora-gold/5 transition-all font-rajdhani text-sm text-gray-300" id="opt-${i}">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold mr-3">${String.fromCharCode(65 + i)}</span>
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function selectAnswer(index) {
+            const q = quizData[currentQuestion];
+            const buttons = document.querySelectorAll('[id^="opt-"]');
+            
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.correct) {
+                    btn.classList.remove('bg-white/5', 'border-white/10');
+                    btn.classList.add('bg-green-500/20', 'border-green-500/50');
+                } else if (i === index && index !== q.correct) {
+                    btn.classList.remove('bg-white/5', 'border-white/10');
+                    btn.classList.add('bg-red-500/20', 'border-red-500/50');
+                }
+            });
+            
+            if (index === q.correct) {
+                score++;
+            }
+            
+            document.getElementById('progress-bar').style.width = `${((currentQuestion + 1) / quizData.length) * 100}%`;
+            document.getElementById('progress-text').textContent = `${currentQuestion + 1}/10`;
+            
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            }, 1500);
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / quizData.length) * 100);
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('quiz-results').classList.remove('hidden');
+            
+            if (percentage >= 70) {
+                document.getElementById('score-display')?.remove();
+                document.getElementById('result-title').textContent = 'Curso Completado!';
+                document.getElementById('result-title').classList.add('text-aurora-gold');
+                document.getElementById('result-message').textContent = `Has aprobado con ${score} de 10 respuestas correctas (${percentage}%). Felicidades por completar el curso!`;
+                document.getElementById('certificate-section').classList.remove('hidden');
+            } else {
+                document.getElementById('result-icon').className = 'fa-solid fa-times-circle text-5xl text-red-400';
+                document.getElementById('result-title').textContent = 'Necesitas repasar';
+                document.getElementById('result-title').classList.add('text-red-400');
+                document.getElementById('result-message').textContent = `Obtuviste ${score} de 10 respuestas correctas. Necesitas al menos 7 para aprobar.`;
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('certificate-section').classList.add('hidden');
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('progress-text').textContent = '0/10';
+            renderQuestion();
+        }
+
+        // Scroll Reveal
+        function revealOnScroll() {
+            const sections = document.querySelectorAll('.reveal');
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestion();
+            revealOnScroll();
+            window.addEventListener('scroll', revealOnScroll);
+        });
+    </script>
+</body>
+</html>
