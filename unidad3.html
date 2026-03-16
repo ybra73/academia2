@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 3: Toma de Decisiones con Asistentes IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        matrix: {
+                            green: '#39ff14',
+                            dark: '#0d0d0d',
+                            glow: '#00ff41'
+                        },
+                        cyber: {
+                            red: '#ff2d55',
+                            yellow: '#ffd60a',
+                            teal: '#00c7be',
+                            indigo: '#5856d6'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'monospace'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        space: ['Space Grotesk', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        :root {
+            --matrix-green: #39ff14;
+            --matrix-dark: #0d0d0d;
+            --cyber-red: #ff2d55;
+            --cyber-yellow: #ffd60a;
+            --cyber-teal: #00c7be;
+            --cyber-indigo: #5856d6;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--matrix-green) var(--matrix-dark);
+        }
+
+        *::-webkit-scrollbar { width: 6px; }
+        *::-webkit-scrollbar-track { background: var(--matrix-dark); }
+        *::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--matrix-green), var(--cyber-teal)); border-radius: 3px; }
+
+        body {
+            background: linear-gradient(180deg, #050510 0%, #0a0a1a 50%, #050510 100%);
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* Matrix Rain Effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(57, 255, 20, 0.03) 0px,
+                    transparent 1px,
+                    transparent 2px,
+                    rgba(57, 255, 20, 0.03) 3px
+                );
+            background-size: 100% 4px;
+            animation: matrix-scan 10s linear infinite;
+        }
+
+        @keyframes matrix-scan {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100px; }
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .glitch::before {
+            animation: glitch-1 2s infinite linear alternate-reverse;
+            color: var(--cyber-red);
+            z-index: -1;
+        }
+        .glitch::after {
+            animation: glitch-2 3s infinite linear alternate-reverse;
+            color: var(--cyber-teal);
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0%, 90%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            92% { clip-path: inset(30% 0 60% 0); transform: translate(-2px, 2px); }
+            94% { clip-path: inset(70% 0 10% 0); transform: translate(2px, -2px); }
+        }
+        @keyframes glitch-2 {
+            0%, 90%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            91% { clip-path: inset(10% 0 80% 0); transform: translate(2px, 1px); }
+            93% { clip-path: inset(50% 0 30% 0); transform: translate(-1px, -1px); }
+        }
+
+        /* Neon Card */
+        .neon-card {
+            background: linear-gradient(145deg, rgba(13, 13, 20, 0.95), rgba(8, 8, 15, 0.98));
+            border: 1px solid rgba(57, 255, 20, 0.2);
+            backdrop-filter: blur(15px);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .neon-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--matrix-green), transparent, var(--cyber-teal));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .neon-card:hover::before {
+            opacity: 1;
+        }
+
+        .neon-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 30px 60px rgba(57, 255, 20, 0.1),
+                0 0 40px rgba(57, 255, 20, 0.1);
+        }
+
+        /* Glow Text */
+        .text-matrix-glow {
+            text-shadow: 
+                0 0 5px var(--matrix-green),
+                0 0 10px var(--matrix-green),
+                0 0 20px rgba(57, 255, 20, 0.5);
+        }
+
+        /* Hexagon Pattern */
+        .hex-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%2339ff14' fill-opacity='0.03'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Animated Border */
+        .animated-frame {
+            position: relative;
+            border-radius: 24px;
+        }
+        .animated-frame::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 27px;
+            background: conic-gradient(
+                from 0deg,
+                var(--matrix-green),
+                var(--cyber-teal),
+                var(--cyber-indigo),
+                var(--cyber-red),
+                var(--cyber-yellow),
+                var(--matrix-green)
+            );
+            animation: border-spin 5s linear infinite;
+            z-index: -1;
+        }
+        .animated-frame::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 27px;
+            background: conic-gradient(
+                from 180deg,
+                var(--matrix-green),
+                var(--cyber-teal),
+                var(--cyber-indigo),
+                var(--cyber-red),
+                var(--cyber-yellow),
+                var(--matrix-green)
+            );
+            animation: border-spin 5s linear infinite reverse;
+            z-index: -2;
+            filter: blur(15px);
+            opacity: 0.5;
+        }
+
+        @keyframes border-spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Float Animations */
+        .float-glitch { animation: float-glitch 6s ease-in-out infinite; }
+        .float-smooth { animation: float-smooth 8s ease-in-out infinite; }
+        .float-pulse { animation: float-pulse 4s ease-in-out infinite; }
+
+        @keyframes float-glitch {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(0.5deg); }
+            50% { transform: translateY(-20px) rotate(-0.5deg); }
+            75% { transform: translateY(-10px) rotate(0.5deg); }
+        }
+        @keyframes float-smooth {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.01); }
+        }
+        @keyframes float-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        /* Decision Tree Style */
+        .decision-node {
+            position: relative;
+        }
+        .decision-node::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(180deg, var(--matrix-green), transparent);
+        }
+        .decision-node:last-child::after {
+            display: none;
+        }
+
+        /* Code Block */
+        .prompt-block {
+            background: rgba(0, 5, 10, 0.95);
+            border: 1px solid rgba(57, 255, 20, 0.4);
+            border-radius: 16px;
+            font-family: 'Space Grotesk', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        .prompt-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--matrix-green), transparent);
+        }
+        .prompt-block::after {
+            content: 'PROMPT ESTRATEGICO';
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: #050510;
+            padding: 2px 12px;
+            font-size: 9px;
+            color: var(--matrix-green);
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 0.15em;
+        }
+
+        /* Progress */
+        .progress-matrix {
+            background: rgba(57, 255, 20, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-matrix-fill {
+            background: linear-gradient(90deg, var(--matrix-green), var(--cyber-teal));
+            height: 100%;
+            transition: width 1s ease;
+        }
+
+        /* Section Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Chat Window */
+        #chat-window { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transform: translateY(30px) scale(0.95); 
+            opacity: 0; 
+            pointer-events: none;
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            z-index: 10001;
+        }
+        #chat-window.active { 
+            transform: translateY(0) scale(1); 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+
+        .bot-trigger {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            animation: pulse-matrix 2s infinite;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0a15, #151525);
+            box-shadow: 
+                0 0 30px rgba(57, 255, 20, 0.5),
+                inset 0 0 20px rgba(57, 255, 20, 0.1);
+        }
+        .bot-trigger img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 3px solid var(--matrix-green);
+            border-radius: 50%;
+        }
+
+        @keyframes pulse-matrix {
+            0% { box-shadow: 0 0 0 0 rgba(57, 255, 20, 0.7), 0 0 30px rgba(57, 255, 20, 0.5); }
+            70% { box-shadow: 0 0 0 20px rgba(57, 255, 20, 0), 0 0 30px rgba(57, 255, 20, 0.5); }
+            100% { box-shadow: 0 0 0 0 rgba(57, 255, 20, 0), 0 0 30px rgba(57, 255, 20, 0.5); }
+        }
+
+        #chat-content::-webkit-scrollbar { width: 4px; }
+        #chat-content::-webkit-scrollbar-thumb { background: rgba(57, 255, 20, 0.3); border-radius: 10px; }
+
+        /* FODA Grid */
+        .foda-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: rgba(57, 255, 20, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .foda-cell {
+            padding: 1.5rem;
+            background: rgba(5, 5, 15, 0.95);
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white hex-pattern">
+    
+    <!-- Matrix Background -->
+    <div class="matrix-bg"></div>
+
+    <!-- Floating Orbs -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute top-20 right-20 w-64 h-64 bg-matrix-green/5 rounded-full blur-3xl float-glitch"></div>
+        <div class="absolute bottom-40 left-10 w-80 h-80 bg-cyber-teal/5 rounded-full blur-3xl float-smooth"></div>
+        <div class="absolute top-1/2 right-1/4 w-48 h-48 bg-cyber-indigo/5 rounded-full blur-3xl float-pulse"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-black/80 border-b border-matrix-green/20">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-matrix-green to-cyber-teal flex items-center justify-center" style="box-shadow: 0 0 20px rgba(57, 255, 20, 0.5);">
+                        <i class="fa-solid fa-brain text-xl text-black"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-orbitron text-lg font-bold text-matrix-glow">IA PARA ADMINISTRADORES</h1>
+                        <p class="text-xs text-matrix-green/70 font-rajdhani">Unidad 3 de 4</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#objetivos" class="text-sm font-rajdhani hover:text-matrix-green transition">Objetivos</a>
+                    <a href="#lecciones" class="text-sm font-rajdhani hover:text-matrix-green transition">Lecciones</a>
+                    <a href="#evaluacion" class="text-sm font-rajdhani hover:text-matrix-green transition">Evaluacion</a>
+                    <div class="px-4 py-2 rounded-full bg-matrix-green/10 border border-matrix-green/30 text-matrix-green text-xs font-orbitron">
+                        SEMANA 3
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-[400px] h-[400px] border border-matrix-green/20 rounded-full animate-pulse"></div>
+            <div class="absolute w-[500px] h-[500px] border border-cyber-teal/10 rounded-full"></div>
+            <div class="absolute w-[600px] h-[600px] border border-cyber-indigo/5 rounded-full"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
+            <div class="text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-matrix-green/10 border border-matrix-green/30 mb-6">
+                    <span class="w-2 h-2 rounded-full bg-matrix-green animate-pulse"></span>
+                    <span class="text-xs font-orbitron text-matrix-green">UNIDAD 3</span>
+                </div>
+                
+                <h1 class="font-orbitron text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                    <span class="text-white">Toma de Decisiones</span><br>
+                    <span class="glitch text-matrix-glow text-matrix-green" data-text="con Asistentes IA">con Asistentes IA</span>
+                </h1>
+                
+                <p class="text-lg text-gray-400 font-rajdhani mb-8 max-w-lg">
+                    Usa IA como consultor estrategico. Aprende a analizar situaciones complejas, planificar proyectos y resolver problemas con asistencia inteligente.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="#lecciones" class="px-8 py-4 rounded-xl bg-gradient-to-r from-matrix-green to-cyber-teal text-black font-orbitron font-bold text-sm transition-all hover:shadow-lg hover:shadow-matrix-green/30">
+                        <i class="fa-solid fa-play mr-2"></i> COMENZAR UNIDAD
+                    </a>
+                    <a href="#objetivos" class="px-8 py-4 rounded-xl border border-matrix-green/30 text-matrix-green font-orbitron text-sm hover:bg-matrix-green/10 transition-all">
+                        <i class="fa-solid fa-list-check mr-2"></i> VER OBJETIVOS
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-white/10">
+                    <div>
+                        <p class="font-orbitron text-3xl font-bold text-matrix-green">4</p>
+                        <p class="text-xs text-gray-500 font-rajdhani">Lecciones</p>
+                    </div>
+                    <div>
+                        <p class="font-orbitron text-3xl font-bold text-cyber-red">10</p>
+                        <p class="text-xs text-gray-500 font-rajdhani">Preguntas</p>
+                    </div>
+                    <div>
+                        <p class="font-orbitron text-3xl font-bold text-cyber-yellow">3</p>
+                        <p class="text-xs text-gray-500 font-rajdhani">Opciones</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative float-smooth">
+                <div class="animated-frame p-1">
+                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&h=500&fit=crop" 
+                         alt="Decisiones con IA" 
+                         class="rounded-3xl w-full h-auto object-cover"
+                         style="filter: contrast(1.1) saturate(1.15);">
+                </div>
+                
+                <div class="absolute -top-4 -right-4 px-4 py-2 rounded-xl bg-black border border-cyber-teal/50 float-pulse">
+                    <p class="text-xs font-orbitron text-cyber-teal">CONSULTOR IA</p>
+                </div>
+                
+                <div class="absolute -bottom-6 -left-6 w-24 h-24 rounded-2xl bg-gradient-to-br from-matrix-green/20 to-cyber-indigo/20 border border-matrix-green/30 flex items-center justify-center backdrop-blur-xl float-glitch">
+                    <i class="fa-solid fa-lightbulb text-4xl text-matrix-green"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+            <p class="text-xs text-gray-500 font-rajdhani">Scroll para continuar</p>
+            <i class="fa-solid fa-chevron-down text-matrix-green"></i>
+        </div>
+    </header>
+
+    <!-- Objetivos -->
+    <section id="objetivos" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <p class="text-matrix-green font-orbitron text-xs tracking-[0.3em] mb-4">OBJETIVOS DE APRENDIZAJE</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        Que lograras en esta <span class="text-matrix-green">unidad</span>
+                    </h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="neon-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-matrix-green/20 border border-matrix-green/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-chart-line text-2xl text-matrix-green"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Analisis Estrategico</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Usar IA para analisis y recomendaciones</p>
+                    </div>
+
+                    <div class="neon-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-cyber-red/20 border border-cyber-red/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-chess text-2xl text-cyber-red"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Planificacion</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Aplicar IA en planificacion estrategica</p>
+                    </div>
+
+                    <div class="neon-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-cyber-yellow/20 border border-cyber-yellow/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-diagram-project text-2xl text-cyber-yellow"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Gestion de Proyectos</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Gestionar proyectos con asistentes IA</p>
+                    </div>
+
+                    <div class="neon-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-cyber-teal/20 border border-cyber-teal/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-puzzle-piece text-2xl text-cyber-teal"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Resolucion de Problemas</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Resolver problemas complejos con IA</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lecciones -->
+    <section id="lecciones" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <p class="text-cyber-red font-orbitron text-xs tracking-[0.3em] mb-4">CONTENIDO</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        4 <span class="text-matrix-green">Lecciones</span> Estrategicas
+                    </h2>
+                </div>
+
+                <!-- Leccion 3.1 -->
+                <div class="mb-12">
+                    <div class="animated-frame rounded-3xl overflow-hidden">
+                        <div class="bg-black/95 p-8">
+                            <div class="flex items-start gap-6 mb-6">
+                                <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-matrix-green to-cyber-teal flex items-center justify-center" style="box-shadow: 0 0 30px rgba(57, 255, 20, 0.4);">
+                                    <span class="font-orbitron text-xl font-bold text-black">3.1</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-xl md:text-2xl font-bold mb-2">
+                                        IA como Consultor Estrategico
+                                    </h3>
+                                    <p class="text-sm text-gray-400 font-rajdhani">
+                                        La IA ya no solo ejecuta tareas. Ahora puede analizar situaciones complejas, ofrecer multiples perspectivas, recomendar cursos de accion y simular escenarios.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- FODA Section -->
+                            <div class="mb-8">
+                                <h4 class="font-orbitron text-lg font-bold text-matrix-green mb-4">
+                                    <i class="fa-solid fa-crosshairs mr-2"></i>Analisis FODA con IA
+                                </h4>
+                                <div class="foda-grid">
+                                    <div class="foda-cell">
+                                        <p class="font-orbitron text-xs text-matrix-green mb-3">FORTALEZAS</p>
+                                        <p class="text-xs text-gray-400">5 principales capacidades internas</p>
+                                    </div>
+                                    <div class="foda-cell">
+                                        <p class="font-orbitron text-xs text-cyber-teal mb-3">OPORTUNIDADES</p>
+                                        <p class="text-xs text-gray-400">5 principales factores externos positivos</p>
+                                    </div>
+                                    <div class="foda-cell">
+                                        <p class="font-orbitron text-xs text-cyber-red mb-3">DEBILIDADES</p>
+                                        <p class="text-xs text-gray-400">5 principales areas de mejora internas</p>
+                                    </div>
+                                    <div class="foda-cell">
+                                        <p class="font-orbitron text-xs text-cyber-yellow mb-3">AMENAZAS</p>
+                                        <p class="text-xs text-gray-400">5 principales riesgos externos</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Prompt FODA -->
+                            <div class="prompt-block p-6 pt-8 mb-6">
+                                <p class="text-gray-300 text-xs leading-relaxed font-space">Actua como consultor estrategico. Analiza la siguiente situacion de mi empresa/departamento:<br><br>[DESCRIBE CONTEXTO: sector, tamano, situacion actual]<br><br>Genera analisis FODA completo:<br>- FORTALEZAS: 5 principales<br>- OPORTUNIDADES: 5 principales<br>- DEBILIDADES: 5 principales<br>- AMENAZAS: 5 principales<br><br>Para cada punto, explica por que es relevante y como impacta.</p>
+                            </div>
+
+                            <!-- Matriz de Decision -->
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div class="p-5 rounded-xl bg-white/5 border border-white/10">
+                                    <h5 class="font-orbitron text-sm font-bold text-cyber-teal mb-3">
+                                        <i class="fa-solid fa-table-cells mr-2"></i>Matriz de Decision
+                                    </h5>
+                                    <p class="text-xs text-gray-400 mb-3">Evalua multiples opciones con criterios ponderados:</p>
+                                    <div class="prompt-block p-4 pt-6 text-[11px]">
+                                        <p class="text-gray-300">Tengo que decidir entre 3 opciones para [DECISION]:<br>OPCION A: [descripcion]<br>OPCION B: [descripcion]<br>OPCION C: [descripcion]<br><br>Criterios: Costo, Tiempo, Riesgo, Impacto<br>Crea matriz de decision con puntajes 1-10 y recomienda la mejor opcion.</p>
+                                    </div>
+                                </div>
+                                <div class="p-5 rounded-xl bg-white/5 border border-white/10">
+                                    <h5 class="font-orbitron text-sm font-bold text-cyber-yellow mb-3">
+                                        <i class="fa-solid fa-coins mr-2"></i>Analisis Costo-Beneficio
+                                    </h5>
+                                    <p class="text-xs text-gray-400 mb-3">Evalua el retorno de inversion:</p>
+                                    <div class="prompt-block p-4 pt-6 text-[11px]">
+                                        <p class="text-gray-300">Propuesta: [DESCRIBE SOLUCION]<br><br>COSTOS: Inicial, Recurrentes, Ocultos<br>BENEFICIOS: Ahorro directo, indirecto, intangibles<br><br>Calcula: ROI a 1, 2 y 3 anos, Punto de equilibrio, Payback period, Recomendacion.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Simulacion Escenarios -->
+                            <div class="p-6 rounded-xl bg-gradient-to-r from-matrix-green/5 to-cyber-indigo/5 border border-matrix-green/20">
+                                <h4 class="font-orbitron text-sm font-bold text-matrix-green mb-4">
+                                    <i class="fa-solid fa-flask mr-2"></i>SIMULACION DE ESCENARIOS (What-If Analysis)
+                                </h4>
+                                <div class="prompt-block p-4 pt-6 text-xs">
+                                    <p class="text-gray-300">Escenario base: [DESCRIBE SITUACION ACTUAL]<br><br>Variables a modificar:<br>- Variable 1: [X]<br>- Variable 2: [Y]<br><br>Simula 3 escenarios:<br>ESCENARIO 1: [Variable 1 aumenta 20%]<br>ESCENARIO 2: [Variable 2 disminuye 30%]<br>ESCENARIO 3: [Combinacion de cambios]<br><br>Para cada escenario predice: Resultado, Probabilidad, Acciones preventivas.</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 p-4 rounded-xl bg-black border border-matrix-green/30">
+                                <p class="font-orbitron text-xs text-matrix-green mb-2"><i class="fa-solid fa-pencil mr-2"></i>ACTIVIDAD PRACTICA</p>
+                                <p class="text-sm text-gray-300 font-rajdhani">
+                                    Toma una decision que debas hacer esta semana (laboral o personal). Usa IA como consultor para analizar opciones. Documenta el proceso.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leccion 3.2 -->
+                <div class="mb-12">
+                    <div class="animated-frame rounded-3xl overflow-hidden">
+                        <div class="bg-black/95 p-8">
+                            <div class="flex items-start gap-6 mb-6">
+                                <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-cyber-red to-cyber-yellow flex items-center justify-center">
+                                    <span class="font-orbitron text-xl font-bold text-white">3.2</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-xl md:text-2xl font-bold mb-2">
+                                        Gestion de Proyectos Asistida por IA
+                                    </h3>
+                                    <p class="text-sm text-gray-400 font-rajdhani">
+                                        El administrador como Project Manager. La IA es tu PMO (Project Management Office) personal.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Fases del Proyecto -->
+                            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                                <div class="p-4 rounded-xl bg-matrix-green/10 border border-matrix-green/30 text-center">
+                                    <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-matrix-green/20 flex items-center justify-center">
+                                        <span class="font-orbitron text-sm font-bold text-matrix-green">1</span>
+                                    </div>
+                                    <p class="font-orbitron text-xs font-bold text-matrix-green">INICIACION</p>
+                                    <p class="text-[10px] text-gray-400 mt-1">Project Charter, Objetivos SMART</p>
+                                </div>
+                                <div class="p-4 rounded-xl bg-cyber-teal/10 border border-cyber-teal/30 text-center">
+                                    <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-cyber-teal/20 flex items-center justify-center">
+                                        <span class="font-orbitron text-sm font-bold text-cyber-teal">2</span>
+                                    </div>
+                                    <p class="font-orbitron text-xs font-bold text-cyber-teal">PLANIFICACION</p>
+                                    <p class="text-[10px] text-gray-400 mt-1">WBS, Cronograma, Ruta Critica</p>
+                                </div>
+                                <div class="p-4 rounded-xl bg-cyber-yellow/10 border border-cyber-yellow/30 text-center">
+                                    <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-cyber-yellow/20 flex items-center justify-center">
+                                        <span class="font-orbitron text-sm font-bold text-cyber-yellow">3</span>
+                                    </div>
+                                    <p class="font-orbitron text-xs font-bold text-cyber-yellow">EJECUCION</p>
+                                    <p class="text-[10px] text-gray-400 mt-1">Monitoreo, Control, Daily Standup</p>
+                                </div>
+                                <div class="p-4 rounded-xl bg-cyber-indigo/10 border border-cyber-indigo/30 text-center">
+                                    <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-cyber-indigo/20 flex items-center justify-center">
+                                        <span class="font-orbitron text-sm font-bold text-cyber-indigo">4</span>
+                                    </div>
+                                    <p class="font-orbitron text-xs font-bold text-cyber-indigo">CIERRE</p>
+                                    <p class="text-[10px] text-gray-400 mt-1">Lecciones aprendidas, Reporte final</p>
+                                </div>
+                            </div>
+
+                            <!-- WBS Prompt -->
+                            <div class="prompt-block p-6 pt-8 mb-6">
+                                <p class="text-gray-300 text-xs leading-relaxed font-space">Proyecto: [NOMBRE Y OBJETIVO]<br>Duracion estimada: [X semanas/meses]<br>Equipo disponible: [X personas]<br>Presupuesto: [monto]<br><br>Genera:<br>1. Fases del proyecto (4-6 fases)<br>2. Entregables por fase<br>3. Timeline (diagrama Gantt en texto)<br>4. Hitos criticos<br>5. Riesgos principales y mitigacion<br>6. Recursos necesarios por fase</p>
+                            </div>
+
+                            <!-- Riesgos -->
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div class="p-5 rounded-xl bg-white/5 border border-white/10">
+                                    <h5 class="font-orbitron text-sm font-bold text-cyber-red mb-3">
+                                        <i class="fa-solid fa-triangle-exclamation mr-2"></i>Gestion de Riesgos
+                                    </h5>
+                                    <p class="text-xs text-gray-400 mb-3">Identifica y mitiga riesgos potenciales:</p>
+                                    <ul class="text-xs text-gray-400 space-y-1">
+                                        <li>• Riesgos tecnicos</li>
+                                        <li>• Riesgos de recursos</li>
+                                        <li>• Riesgos de stakeholders</li>
+                                        <li>• Riesgos externos</li>
+                                    </ul>
+                                </div>
+                                <div class="p-5 rounded-xl bg-white/5 border border-white/10">
+                                    <h5 class="font-orbitron text-sm font-bold text-cyber-teal mb-3">
+                                        <i class="fa-solid fa-users mr-2"></i>Gestion de Stakeholders
+                                    </h5>
+                                    <p class="text-xs text-gray-400 mb-3">Matriz Poder/Interes:</p>
+                                    <ul class="text-xs text-gray-400 space-y-1">
+                                        <li>• Alta influencia + Alto interes: Gestionar estrechamente</li>
+                                        <li>• Alta influencia + Bajo interes: Mantener satisfechos</li>
+                                        <li>• Baja influencia + Alto interes: Mantener informados</li>
+                                        <li>• Baja influencia + Bajo interes: Monitorear</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 p-4 rounded-xl bg-black border border-cyber-red/30">
+                                <p class="font-orbitron text-xs text-cyber-red mb-2"><i class="fa-solid fa-pencil mr-2"></i>ACTIVIDAD PRACTICA</p>
+                                <p class="text-sm text-gray-300 font-rajdhani">
+                                    Disena la planificacion completa de un proyecto ficticio usando IA. Debe incluir WBS, cronograma, riesgos y plan de comunicacion.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leccion 3.3 -->
+                <div class="mb-12">
+                    <div class="animated-frame rounded-3xl overflow-hidden">
+                        <div class="bg-black/95 p-8">
+                            <div class="flex items-start gap-6 mb-6">
+                                <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-cyber-yellow to-matrix-green flex items-center justify-center">
+                                    <span class="font-orbitron text-xl font-bold text-black">3.3</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-xl md:text-2xl font-bold mb-2">
+                                        Resolucion de Problemas Complejos
+                                    </h3>
+                                    <p class="text-sm text-gray-400 font-rajdhani">
+                                        Tecnicas avanzadas para llegar a la raiz de los problemas y encontrar soluciones creativas.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Tecnicas -->
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div class="p-5 rounded-xl bg-matrix-green/10 border border-matrix-green/30">
+                                    <h5 class="font-orbitron text-sm font-bold text-matrix-green mb-3">
+                                        <i class="fa-solid fa-question mr-2"></i>5 Porques (Tecnica Toyota)
+                                    </h5>
+                                    <p class="text-xs text-gray-400 mb-3">Llega a la causa raiz:</p>
+                                    <div class="prompt-block p-4 pt-6 text-[11px]">
+                                        <p class="text-gray-300">Problema: [DESCRIBE EL SINTOMA]<br>Aplica tecnica de "5 Porques":<br>¿Por que ocurre [PROBLEMA]? → Porque [R1]<br>¿Por que [R1]? → Porque [R2]<br>¿Por que [R2]? → Porque [R3]<br>¿Por que [R3]? → Porque [R4]<br>¿Por que [R4]? → Porque [CAUSA RAIZ]<br><br>Solucion recomendada para causa raiz.</p>
+                                    </div>
+                                </div>
+                                <div class="p-5 rounded-xl bg-cyber-teal/10 border border-cyber-teal/30">
+                                    <h5 class="font-orbitron text-sm font-bold text-cyber-teal mb-3">
+                                        <i class="fa-solid fa-fish mr-2"></i>Diagrama de Ishikawa
+                                    </h5>
+                                    <p class="text-xs text-gray-400 mb-3">Espina de Pescado - Categorias:</p>
+                                    <ul class="text-xs text-gray-400 space-y-1">
+                                        <li>• <span class="text-matrix-green">Personas:</span> Factor humano</li>
+                                        <li>• <span class="text-cyber-teal">Procesos:</span> Metodos de trabajo</li>
+                                        <li>• <span class="text-cyber-yellow">Tecnologia:</span> Herramientas</li>
+                                        <li>• <span class="text-cyber-red">Ambiente:</span> Entorno</li>
+                                        <li>• <span class="text-cyber-indigo">Materiales:</span> Recursos</li>
+                                        <li>• <span class="text-matrix-green">Medicion:</span> Control</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Eisenhower -->
+                            <div class="p-6 rounded-xl bg-gradient-to-r from-cyber-yellow/5 to-cyber-red/5 border border-cyber-yellow/20">
+                                <h4 class="font-orbitron text-sm font-bold text-cyber-yellow mb-4">
+                                    <i class="fa-solid fa-list-check mr-2"></i>MATRIZ DE EISENHOWER 2.0
+                                </h4>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="p-3 rounded-lg bg-cyber-red/20 border border-cyber-red/40 text-center">
+                                        <p class="text-[10px] font-orbitron text-cyber-red mb-1">URGENTE + IMPORTANTE</p>
+                                        <p class="text-xs text-gray-300">Hacer YA</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-cyber-yellow/20 border border-cyber-yellow/40 text-center">
+                                        <p class="text-[10px] font-orbitron text-cyber-yellow mb-1">IMPORTANTE + NO URGENTE</p>
+                                        <p class="text-xs text-gray-300">Programar</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-cyber-indigo/20 border border-cyber-indigo/40 text-center">
+                                        <p class="text-[10px] font-orbitron text-cyber-indigo mb-1">URGENTE + NO IMPORTANTE</p>
+                                        <p class="text-xs text-gray-300">Delegar</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-gray-500/20 border border-gray-500/40 text-center">
+                                        <p class="text-[10px] font-orbitron text-gray-400 mb-1">NI URGENTE NI IMPORTANTE</p>
+                                        <p class="text-xs text-gray-300">Eliminar</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 p-4 rounded-xl bg-black border border-cyber-yellow/30">
+                                <p class="font-orbitron text-xs text-cyber-yellow mb-2"><i class="fa-solid fa-pencil mr-2"></i>ACTIVIDAD PRACTICA</p>
+                                <p class="text-sm text-gray-300 font-rajdhani">
+                                    Identifica un problema real de tu trabajo que lleves semanas/meses intentando resolver. Aplica al menos 2 tecnicas de esta leccion con IA.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leccion 3.4 -->
+                <div class="mb-12">
+                    <div class="animated-frame rounded-3xl overflow-hidden">
+                        <div class="bg-black/95 p-8">
+                            <div class="flex items-start gap-6 mb-6">
+                                <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-cyber-indigo to-cyber-red flex items-center justify-center">
+                                    <span class="font-orbitron text-xl font-bold text-white">3.4</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-xl md:text-2xl font-bold mb-2">
+                                        IA Etica y Responsable en Administracion
+                                    </h3>
+                                    <p class="text-sm text-gray-400 font-rajdhani">
+                                        Con gran poder viene gran responsabilidad. Aprende a usar IA eticamente.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Principios Eticos -->
+                            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                                <div class="p-4 rounded-xl bg-matrix-green/10 border border-matrix-green/30 text-center">
+                                    <i class="fa-solid fa-eye text-xl text-matrix-green mb-2"></i>
+                                    <p class="text-xs font-bold">Transparencia</p>
+                                </div>
+                                <div class="p-4 rounded-xl bg-cyber-teal/10 border border-cyber-teal/30 text-center">
+                                    <i class="fa-solid fa-lock text-xl text-cyber-teal mb-2"></i>
+                                    <p class="text-xs font-bold">Privacidad</p>
+                                </div>
+                                <div class="p-4 rounded-xl bg-cyber-yellow/10 border border-cyber-yellow/30 text-center">
+                                    <i class="fa-solid fa-scale-balanced text-xl text-cyber-yellow mb-2"></i>
+                                    <p class="text-xs font-bold">No Discriminacion</p>
+                                </div>
+                                <div class="p-4 rounded-xl bg-cyber-indigo/10 border border-cyber-indigo/30 text-center">
+                                    <i class="fa-solid fa-user-check text-xl text-cyber-indigo mb-2"></i>
+                                    <p class="text-xs font-bold">Supervision Humana</p>
+                                </div>
+                                <div class="p-4 rounded-xl bg-cyber-red/10 border border-cyber-red/30 text-center">
+                                    <i class="fa-solid fa-shield text-xl text-cyber-red mb-2"></i>
+                                    <p class="text-xs font-bold">Seguridad</p>
+                                </div>
+                            </div>
+
+                            <!-- Regla de Oro -->
+                            <div class="p-6 rounded-xl bg-gradient-to-r from-cyber-yellow/10 to-cyber-red/10 border border-cyber-yellow/30 mb-6">
+                                <p class="font-orbitron text-sm font-bold text-cyber-yellow mb-2">
+                                    <i class="fa-solid fa-star mr-2"></i>REGLA DE ORO
+                                </p>
+                                <p class="text-2xl text-white font-orbitron font-bold">
+                                    "La IA recomienda. El humano decide."
+                                </p>
+                            </div>
+
+                            <!-- Checklist -->
+                            <div class="p-6 rounded-xl bg-white/5 border border-white/10">
+                                <h5 class="font-orbitron text-sm font-bold text-matrix-green mb-4">
+                                    <i class="fa-solid fa-clipboard-check mr-2"></i>Marco de Decision Etica
+                                </h5>
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-6 h-6 rounded border border-matrix-green/50 flex items-center justify-center">
+                                            <span class="text-xs text-matrix-green">1</span>
+                                        </div>
+                                        <p class="text-xs text-gray-300">Es legal? (Cumple regulaciones)</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-6 h-6 rounded border border-cyber-teal/50 flex items-center justify-center">
+                                            <span class="text-xs text-cyber-teal">2</span>
+                                        </div>
+                                        <p class="text-xs text-gray-300">Es justo? (No discrimina)</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-6 h-6 rounded border border-cyber-yellow/50 flex items-center justify-center">
+                                            <span class="text-xs text-cyber-yellow">3</span>
+                                        </div>
+                                        <p class="text-xs text-gray-300">Es transparente? (Puedo explicar la decision)</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-6 h-6 rounded border border-cyber-indigo/50 flex items-center justify-center">
+                                            <span class="text-xs text-cyber-indigo">4</span>
+                                        </div>
+                                        <p class="text-xs text-gray-300">Es seguro? (Protege datos sensibles)</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-6 h-6 rounded border border-cyber-red/50 flex items-center justify-center">
+                                            <span class="text-xs text-cyber-red">5</span>
+                                        </div>
+                                        <p class="text-xs text-gray-300">Beneficia a stakeholders? (No solo a la empresa)</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 p-4 rounded-xl bg-black border border-cyber-indigo/30">
+                                <p class="font-orbitron text-xs text-cyber-indigo mb-2"><i class="fa-solid fa-pencil mr-2"></i>ACTIVIDAD PRACTICA</p>
+                                <p class="text-sm text-gray-300 font-rajdhani">
+                                    Crea una mini-politica de uso de IA para tu area de trabajo (1 pagina). Incluye usos permitidos, prohibidos y responsabilidades.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Evaluacion -->
+    <section id="evaluacion" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <p class="text-cyber-yellow font-orbitron text-xs tracking-[0.3em] mb-4">EVALUACION</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        Cuestionario <span class="text-matrix-green">Unidad 3</span>
+                    </h2>
+                    <p class="text-gray-400 font-rajdhani mt-4">10 preguntas - 70% para aprobacion</p>
+                </div>
+
+                <div class="animated-frame rounded-3xl overflow-hidden">
+                    <div class="bg-black/95 p-8">
+                        <div class="mb-8">
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="text-gray-400">Progreso</span>
+                                <span class="text-matrix-green font-orbitron" id="progress-text">0/10</span>
+                            </div>
+                            <div class="progress-matrix h-2">
+                                <div class="progress-matrix-fill" id="progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div id="quiz-container"></div>
+
+                        <div id="quiz-results" class="hidden text-center py-12">
+                            <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-matrix-green to-cyber-teal flex items-center justify-center">
+                                <span class="font-orbitron text-4xl font-bold text-white" id="score-display">0%</span>
+                            </div>
+                            <h3 class="font-orbitron text-2xl font-bold mb-2" id="result-title">Resultado</h3>
+                            <p class="text-gray-400 font-rajdhani mb-6" id="result-message">Mensaje</p>
+                            <button onclick="resetQuiz()" class="px-8 py-4 rounded-xl bg-gradient-to-r from-matrix-green to-cyber-teal text-black font-orbitron font-bold text-sm">
+                                <i class="fa-solid fa-rotate mr-2"></i> REINTENTAR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Actividad Practica -->
+    <section id="actividad" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal">
+                <div class="text-center mb-16">
+                    <p class="text-cyber-indigo font-orbitron text-xs tracking-[0.3em] mb-4">ENTREGABLE</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        Analisis <span class="text-cyber-red">Estrategico</span> con IA
+                    </h2>
+                </div>
+
+                <div class="animated-frame rounded-3xl overflow-hidden">
+                    <div class="bg-black/95 p-8">
+                        <p class="text-gray-400 font-rajdhani mb-6">Elige UNA de las siguientes opciones:</p>
+
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="neon-card rounded-xl p-5">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <div class="w-10 h-10 rounded-lg bg-matrix-green/20 flex items-center justify-center">
+                                        <span class="font-orbitron text-sm font-bold text-matrix-green">A</span>
+                                    </div>
+                                    <h4 class="font-orbitron text-sm font-bold">Analisis FODA</h4>
+                                </div>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>• 5 Fortalezas con justificacion</li>
+                                    <li>• 5 Oportunidades con justificacion</li>
+                                    <li>• 5 Debilidades con justificacion</li>
+                                    <li>• 5 Amenazas con justificacion</li>
+                                    <li>• 3 estrategias concretas</li>
+                                </ul>
+                            </div>
+                            <div class="neon-card rounded-xl p-5">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <div class="w-10 h-10 rounded-lg bg-cyber-teal/20 flex items-center justify-center">
+                                        <span class="font-orbitron text-sm font-bold text-cyber-teal">B</span>
+                                    </div>
+                                    <h4 class="font-orbitron text-sm font-bold">Resolucion de Problema</h4>
+                                </div>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>• Tecnica de los 5 Porques</li>
+                                    <li>• Diagrama de Ishikawa</li>
+                                    <li>• Analisis costo-beneficio</li>
+                                    <li>• Plan de implementacion</li>
+                                </ul>
+                            </div>
+                            <div class="neon-card rounded-xl p-5">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <div class="w-10 h-10 rounded-lg bg-cyber-yellow/20 flex items-center justify-center">
+                                        <span class="font-orbitron text-sm font-bold text-cyber-yellow">C</span>
+                                    </div>
+                                    <h4 class="font-orbitron text-sm font-bold">Planificacion de Proyecto</h4>
+                                </div>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>• Project Charter</li>
+                                    <li>• WBS (Work Breakdown Structure)</li>
+                                    <li>• Cronograma con ruta critica</li>
+                                    <li>• Analisis de riesgos (top 5)</li>
+                                    <li>• Plan de comunicacion</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="text-center md:text-left">
+                    <p class="font-orbitron text-sm text-gray-400">Unidad 3 de 4 completada</p>
+                    <p class="text-xs text-gray-500 font-rajdhani">Continua con la Unidad 4: Integracion Total</p>
+                </div>
+                <div class="flex gap-4">
+                    <a href="#" class="px-6 py-3 rounded-xl border border-white/20 text-gray-400 font-orbitron text-xs hover:border-matrix-green hover:text-matrix-green transition-all">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> ANTERIOR
+                    </a>
+                    <a href="#" class="px-6 py-3 rounded-xl bg-gradient-to-r from-matrix-green to-cyber-teal text-black font-orbitron text-xs">
+                        SIGUIENTE <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chat Bot -->
+    <button onclick="toggleChat()" class="bot-trigger" aria-label="Abrir asistente virtual">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Profe Virtual IA">
+    </button>
+
+    <div id="chat-window" class="w-[90vw] md:w-[420px] bg-black rounded-[2rem] shadow-2xl border border-matrix-green/20 overflow-hidden">
+        <div class="bg-gradient-to-r from-matrix-green to-cyber-teal p-5 text-black flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-black/20 rounded-full flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-sm font-orbitron tracking-tight">PROFE VIRTUAL</p>
+                    <p class="text-[9px] opacity-80 font-rajdhani">Asistente Unidad 3</p>
+                </div>
+            </div>
+            <button onclick="toggleChat()" class="hover:rotate-90 transition duration-300" aria-label="Cerrar chat">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+        </div>
+        
+        <div id="chat-content" class="h-[350px] overflow-y-auto p-4 space-y-3 bg-black/90 text-xs">
+            <div class="bg-white/5 p-3 rounded-2xl rounded-tl-none mr-8 text-slate-300 border border-white/5">
+                Hola! Soy tu Profe Virtual para la <strong class="text-matrix-green">Unidad 3: Toma de Decisiones</strong>. Puedo ayudarte con analisis FODA, gestion de proyectos, resolucion de problemas y etica en IA. En que puedo ayudarte?
+            </div>
+        </div>
+
+        <div id="chat-input-area" class="p-4 bg-black border-t border-white/5 flex gap-2">
+            <input type="text" id="user-input" placeholder="Escribe tu pregunta..." 
+                   class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-matrix-green text-white text-sm font-rajdhani"
+                   aria-label="Escribe tu mensaje">
+            <button onclick="handleChat()" class="bg-gradient-to-r from-matrix-green to-cyber-teal text-white w-11 h-11 rounded-xl flex items-center justify-center shadow-lg hover:opacity-90 transition" aria-label="Enviar mensaje">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Knowledge Base Unit 3
+        const knowledgeBase = {
+            'foda': 'El analisis FODA es una herramienta estrategica que evalua:\n\n- FORTALEZAS: Capacidades internas positivas\n- OPORTUNIDADES: Factores externos favorables\n- DEBILIDADES: Areas de mejora internas\n- AMENAZAS: Riesgos externos\n\nPrompt: "Actua como consultor estrategico. Genera analisis FODA completo de [CONTEXTO]. Para cada punto explica por que es relevante."',
+            'matriz decision': 'La matriz de decision evalua opciones con criterios ponderados:\n\n1. Lista las opciones a evaluar\n2. Define criterios (costo, tiempo, riesgo, impacto)\n3. Asigna peso a cada criterio\n4. Puntua cada opcion (1-10)\n5. Multiplica puntaje x peso\n6. Suma totales\n\nPrompt: "Tengo que decidir entre [OPCIONES]. Crea matriz de decision con criterios [LISTA] y recomienda la mejor opcion."',
+            '5 porques': 'La tecnica de los 5 Porques (Toyota) llega a la causa raiz:\n\nProblema: "Bajo ventas"\n1. Por que? → Falta de marketing\n2. Por que? → Presupuesto reducido\n3. Por que? → Recortes de gastos\n4. Por que? → Baja rentabilidad\n5. Por que? → Precios muy altos\n\nCAUSA RAIZ: Estrategia de precios incorrecta\nSOLUCION: Revisar estructura de costos y precios.',
+            'ishikawa': 'El Diagrama de Ishikawa (Espina de Pescado) categoriza causas:\n\n- PERSONAS: Factor humano, capacitacion\n- PROCESOS: Metodos de trabajo\n- TECNOLOGIA: Herramientas, sistemas\n- AMBIENTE: Condiciones laborales\n- MATERIALES: Recursos, insumos\n- MEDICION: Control, indicadores\n\nPrompt: "Aplica diagrama Ishikawa al problema [DESCRIPCION]. Identifica 3-5 causas por categoria."',
+            'eisenhower': 'La Matriz de Eisenhower clasifica tareas en 4 cuadrantes:\n\n1. URGENTE + IMPORTANTE → Hacer YA\n   (Crisis, deadlines inmediatos)\n\n2. IMPORTANTE + NO URGENTE → Programar\n   (Planificacion, prevencion)\n\n3. URGENTE + NO IMPORTANTE → Delegar\n   (Interrupciones, algunos correos)\n\n4. NI URGENTE NI IMPORTANTE → Eliminar\n   (Distracciones, tiempo perdido)',
+            'wbs': 'WBS (Work Breakdown Structure) descompone el proyecto:\n\nNivel 1: Fases principales\nNivel 2: Entregables por fase\nNivel 3: Tareas especificas\n\nPrompt: "Proyecto: [NOMBRE]. Crea WBS con 4-6 fases, entregables por fase, duracion estimada de cada tarea y dependencias."',
+            'ruta critica': 'La ruta critica es la secuencia de tareas que determina la duracion minima del proyecto. Si una tarea de la ruta critica se retrasa, todo el proyecto se retrasa.\n\nSe identifica calculando el tiempo mas largo desde inicio hasta fin, considerando dependencias.',
+            'stakeholder': 'La Matriz Poder/Interes clasifica stakeholders:\n\n- ALTA influencia + ALTO interes: Gestionar estrechamente\n- ALTA influencia + BAJO interes: Mantener satisfechos\n- BAJA influencia + ALTO interes: Mantener informados\n- BAJA influencia + BAJO interes: Monitorear',
+            'riesgo': 'La gestion de riesgos incluye:\n\n1. IDENTIFICACION: Que puede salir mal?\n2. EVALUACION: Probabilidad x Impacto\n3. RESPUESTA:\n   - Evitar: Eliminar la causa\n   - Mitigar: Reducir probabilidad/impacto\n   - Transferir: Seguros, contratos\n   - Aceptar: Plan de contingencia',
+            'etica': 'Los 5 principios eticos de la IA:\n\n1. TRANSPARENCIA: Informar cuando usas IA\n2. PRIVACIDAD: Proteger datos sensibles\n3. NO DISCRIMINACION: Evitar sesgos\n4. SUPERVISION HUMANA: El humano decide\n5. SEGURIDAD: Proteger informacion\n\nREGLA DE ORO: "La IA recomienda. El humano decide."',
+            'costo beneficio': 'El analisis costo-beneficio evalua:\n\nCOSTOS:\n- Inversion inicial\n- Costos recurrentes\n- Costos ocultos\n\nBENEFICIOS:\n- Ahorro directo\n- Ahorro indirecto\n- Beneficios intangibles\n\nMETRICAS:\n- ROI = (Beneficios - Costos) / Costos x 100\n- Payback = Inversion / Flujo anual\n- Punto de equilibrio',
+            'sesgo': 'Los sesgos en IA ocurren cuando los datos de entrenamiento contienen prejuicios. Ejemplo: Una IA de RRHH que rechaza CVs de mujeres porque fue entrenada con datos historicos de una empresa que contrataba principalmente hombres.\n\nSOLUCION: Revisar outputs de IA en decisiones criticas y usar datos diversos para entrenamiento.'
+        };
+
+        function toggleChat() { 
+            document.getElementById('chat-window').classList.toggle('active'); 
+        }
+
+        function appendMsg(text, isUser = false) {
+            const content = document.getElementById('chat-content');
+            const msg = document.createElement('div');
+            
+            if (isUser) {
+                msg.className = "bg-gradient-to-r from-matrix-green to-cyber-teal text-white p-3 rounded-2xl rounded-tr-none ml-8 text-xs shadow-md font-rajdhani";
+            } else {
+                msg.className = "bg-white/5 text-slate-300 p-3 rounded-2xl rounded-tl-none mr-8 text-xs border border-white/5 whitespace-pre-line";
+            }
+            
+            msg.textContent = text;
+            content.appendChild(msg);
+            content.scrollTop = content.scrollHeight;
+        }
+
+        function findBestMatch(input) {
+            const inputLower = input.toLowerCase();
+            let bestMatch = null;
+            let highestScore = 0;
+            
+            for (const [key, value] of Object.entries(knowledgeBase)) {
+                const keywords = key.split(' ');
+                let score = 0;
+                keywords.forEach(keyword => {
+                    if (inputLower.includes(keyword)) {
+                        score++;
+                    }
+                });
+                if (score > highestScore) {
+                    highestScore = score;
+                    bestMatch = value;
+                }
+            }
+            
+            return highestScore > 0 ? bestMatch : null;
+        }
+
+        function handleChat() {
+            const input = document.getElementById('user-input');
+            const val = input.value.trim();
+            if(!val) return;
+            
+            appendMsg(val, true);
+            input.value = '';
+
+            setTimeout(() => {
+                const response = findBestMatch(val);
+                if (response) {
+                    appendMsg(response);
+                } else {
+                    appendMsg('No tengo informacion especifica sobre esa pregunta. Prueba con palabras clave como: FODA, matriz decision, 5 porques, ishikawa, eisenhower, WBS, ruta critica, stakeholder, riesgo, etica, costo beneficio, sesgo.');
+                }
+            }, 800);
+        }
+
+        document.getElementById('user-input').addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') handleChat(); 
+        });
+
+        // Quiz Data Unit 3
+        const quizData = [
+            {
+                question: 'Un analisis FODA incluye:',
+                options: ['Solo fortalezas y oportunidades', 'Fortalezas, Oportunidades, Debilidades, Amenazas', 'Finanzas, Operaciones, Desarrollo, Administracion', 'Ninguna de las anteriores'],
+                correct: 1
+            },
+            {
+                question: 'La tecnica de los "5 Porques" sirve para:',
+                options: ['Generar ideas creativas', 'Llegar a la causa raiz de un problema', 'Priorizar tareas', 'Evaluar presupuestos'],
+                correct: 1
+            },
+            {
+                question: 'En gestion de proyectos, la "ruta critica" es:',
+                options: ['El camino mas corto del proyecto', 'La secuencia de tareas que determina la duracion minima', 'Las tareas mas dificiles', 'Las tareas mas caras'],
+                correct: 1
+            },
+            {
+                question: 'Cual NO es un principio etico del uso de IA?',
+                options: ['Transparencia', 'Privacidad', 'Maximizar ganancias a cualquier costo', 'No discriminacion'],
+                correct: 2
+            },
+            {
+                question: 'Un "stakeholder" es:',
+                options: ['Solo el jefe del proyecto', 'Cualquier persona afectada o interesada en el proyecto', 'Solo los clientes', 'Solo el equipo de trabajo'],
+                correct: 1
+            },
+            {
+                question: 'La matriz de Eisenhower clasifica tareas en:',
+                options: ['Faciles y dificiles', 'Caras y baratas', 'Urgente/No urgente x Importante/No importante', 'Corto y largo plazo'],
+                correct: 2
+            },
+            {
+                question: 'Que datos NO debes subir a ChatGPT publico?',
+                options: ['Informacion publica de Wikipedia', 'Datos personales de clientes sin anonimizar', 'Recetas de cocina', 'Informacion general de la industria'],
+                correct: 1
+            },
+            {
+                question: 'Un analisis costo-beneficio debe incluir:',
+                options: ['Solo costos iniciales', 'Solo beneficios esperados', 'Costos, beneficios, ROI y punto de equilibrio', 'Solo opiniones subjetivas'],
+                correct: 2
+            },
+            {
+                question: 'La regla de oro en decisiones con IA es:',
+                options: ['La IA siempre tiene razon', 'La IA recomienda, el humano decide', 'Nunca usar IA para decisiones', 'Dejar que la IA decida todo'],
+                correct: 1
+            },
+            {
+                question: 'Que es un "sesgo" en IA?',
+                options: ['Un error de programacion', 'Una tendencia a discriminar basandose en datos historicos sesgados', 'Un virus informatico', 'Una funcion de Excel'],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function renderQuestion() {
+            const container = document.getElementById('quiz-container');
+            const q = quizData[currentQuestion];
+            
+            container.innerHTML = `
+                <div class="mb-6">
+                    <p class="font-orbitron text-xs text-matrix-green mb-2">PREGUNTA ${currentQuestion + 1} DE 10</p>
+                    <h3 class="text-lg font-rajdhani font-bold text-white">${q.question}</h3>
+                </div>
+                <div class="space-y-3">
+                    ${q.options.map((opt, i) => `
+                        <button onclick="selectAnswer(${i})" class="w-full text-left p-4 rounded-xl bg-white/5 border border-white/10 hover:border-matrix-green/50 hover:bg-matrix-green/5 transition-all font-rajdhani text-sm text-gray-300" id="opt-${i}">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold mr-3">${String.fromCharCode(65 + i)}</span>
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function selectAnswer(index) {
+            const q = quizData[currentQuestion];
+            const buttons = document.querySelectorAll('[id^="opt-"]');
+            
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.correct) {
+                    btn.classList.remove('bg-white/5', 'border-white/10');
+                    btn.classList.add('bg-green-500/20', 'border-green-500/50');
+                } else if (i === index && index !== q.correct) {
+                    btn.classList.remove('bg-white/5', 'border-white/10');
+                    btn.classList.add('bg-red-500/20', 'border-red-500/50');
+                }
+            });
+            
+            if (index === q.correct) {
+                score++;
+            }
+            
+            document.getElementById('progress-bar').style.width = `${((currentQuestion + 1) / quizData.length) * 100}%`;
+            document.getElementById('progress-text').textContent = `${currentQuestion + 1}/10`;
+            
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            }, 1500);
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / quizData.length) * 100);
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('quiz-results').classList.remove('hidden');
+            document.getElementById('score-display').textContent = `${percentage}%`;
+            
+            if (percentage >= 70) {
+                document.getElementById('result-title').textContent = 'Felicidades!';
+                document.getElementById('result-title').classList.add('text-green-400');
+                document.getElementById('result-message').textContent = `Has aprobado la evaluacion con ${score} de 10 respuestas correctas.`;
+            } else {
+                document.getElementById('result-title').textContent = 'Necesitas repasar';
+                document.getElementById('result-title').classList.add('text-red-400');
+                document.getElementById('result-message').textContent = `Obtuviste ${score} de 10 respuestas correctas. Necesitas al menos 7 para aprobar.`;
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('progress-text').textContent = '0/10';
+            renderQuestion();
+        }
+
+        // Scroll Reveal
+        function revealOnScroll() {
+            const sections = document.querySelectorAll('.reveal');
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestion();
+            revealOnScroll();
+            window.addEventListener('scroll', revealOnScroll);
+        });
+    </script>
+</body>
+</html>
