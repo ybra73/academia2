@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 1: Fundamentos de IA para Administración</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#050508',
+                            darker: '#02020a',
+                            cyan: '#00f5ff',
+                            magenta: '#ff00ff',
+                            gold: '#ffd700',
+                            silver: '#c0c0c0',
+                            blue: '#0066ff',
+                            purple: '#8b5cf6'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'monospace'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        :root {
+            --cyber-cyan: #00f5ff;
+            --cyber-magenta: #ff00ff;
+            --cyber-gold: #ffd700;
+            --cyber-dark: #050508;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--cyber-cyan) var(--cyber-dark);
+        }
+
+        *::-webkit-scrollbar { width: 6px; }
+        *::-webkit-scrollbar-track { background: var(--cyber-dark); }
+        *::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--cyber-cyan), var(--cyber-magenta)); border-radius: 3px; }
+
+        body {
+            background: linear-gradient(135deg, #050508 0%, #0a0a15 50%, #050508 100%);
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* Grid Pattern Background */
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Animated Gradient Border */
+        .gradient-border {
+            position: relative;
+            background: rgba(10, 10, 20, 0.8);
+            border-radius: 20px;
+        }
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 22px;
+            background: linear-gradient(45deg, var(--cyber-cyan), var(--cyber-magenta), var(--cyber-gold), var(--cyber-cyan));
+            background-size: 400% 400%;
+            animation: gradient-rotate 8s ease infinite;
+            z-index: -1;
+            opacity: 0.7;
+        }
+
+        @keyframes gradient-rotate {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Glowing Text */
+        .glow-text {
+            text-shadow: 0 0 10px var(--cyber-cyan), 0 0 20px var(--cyber-cyan), 0 0 40px var(--cyber-cyan);
+        }
+
+        .glow-text-gold {
+            text-shadow: 0 0 10px var(--cyber-gold), 0 0 20px var(--cyber-gold);
+        }
+
+        /* Holographic Card */
+        .holo-card {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1) 0%, rgba(139, 92, 246, 0.1) 50%, rgba(255, 0, 255, 0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            transition: all 0.4s ease;
+        }
+        .holo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 245, 255, 0.2);
+            border-color: var(--cyber-cyan);
+        }
+
+        /* Neon Button */
+        .neon-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .neon-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        .neon-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Typing Animation */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Floating Elements */
+        .float-slow { animation: float-slow 6s ease-in-out infinite; }
+        .float-medium { animation: float-medium 4s ease-in-out infinite; }
+        .float-fast { animation: float-fast 3s ease-in-out infinite; }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+        @keyframes float-medium {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        @keyframes float-fast {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+        }
+
+        /* Particle Effect */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--cyber-cyan);
+            border-radius: 50%;
+            animation: particle-float 15s infinite linear;
+            opacity: 0.5;
+        }
+        @keyframes particle-float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+
+        /* Section Reveal */
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .reveal-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Data Stream Effect */
+        .data-stream {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, var(--cyber-cyan), transparent);
+            animation: stream 3s infinite linear;
+        }
+        @keyframes stream {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* Chat Window */
+        #chat-window { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transform: translateY(30px) scale(0.95); 
+            opacity: 0; 
+            pointer-events: none;
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            z-index: 10001;
+        }
+        #chat-window.active { 
+            transform: translateY(0) scale(1); 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+
+        .bot-trigger {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            animation: pulse-cyber 2s infinite;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0a15, #1a1a2e);
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+        }
+        .bot-trigger img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 3px solid var(--cyber-cyan);
+            border-radius: 50%;
+        }
+
+        @keyframes pulse-cyber {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 245, 255, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(0, 245, 255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 245, 255, 0); }
+        }
+
+        #chat-content::-webkit-scrollbar { width: 4px; }
+        #chat-content::-webkit-scrollbar-thumb { background: rgba(0, 245, 255, 0.3); border-radius: 10px; }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Code Block Style */
+        .code-block {
+            background: rgba(0, 10, 20, 0.9);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+        .code-block::before {
+            content: 'PROMPT';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: var(--cyber-dark);
+            padding: 2px 10px;
+            font-size: 10px;
+            color: var(--cyber-cyan);
+            border-radius: 4px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        /* Progress Bar */
+        .progress-cyber {
+            background: rgba(0, 245, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-cyber-fill {
+            background: linear-gradient(90deg, var(--cyber-cyan), var(--cyber-magenta));
+            height: 100%;
+            transition: width 1s ease;
+        }
+
+        /* Accordion */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        .accordion-content.open {
+            max-height: 2000px;
+        }
+
+        /* Tabs */
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-purple));
+            color: #000;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white grid-pattern">
+    
+    <!-- Floating Particles -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 3s;"></div>
+        <div class="particle" style="left: 85%; animation-delay: 5s;"></div>
+        <div class="particle" style="left: 95%; animation-delay: 2.5s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-cyber-dark/80 border-b border-cyber-cyan/20">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyber-cyan to-cyber-purple flex items-center justify-center">
+                        <i class="fa-solid fa-robot text-xl text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-orbitron text-lg font-bold glow-text">IA PARA ADMINISTRADORES</h1>
+                        <p class="text-xs text-cyber-cyan/70 font-rajdhani">Unidad 1 de 4</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#objetivos" class="text-sm font-rajdhani hover:text-cyber-cyan transition">Objetivos</a>
+                    <a href="#lecciones" class="text-sm font-rajdhani hover:text-cyber-cyan transition">Lecciones</a>
+                    <a href="#evaluacion" class="text-sm font-rajdhani hover:text-cyber-cyan transition">Evaluacion</a>
+                    <div class="px-4 py-2 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan text-xs font-orbitron">
+                        SEMANA 1
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <!-- Background Effects -->
+        <div class="absolute inset-0">
+            <div class="absolute top-20 left-10 w-96 h-96 bg-cyber-cyan/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 right-10 w-80 h-80 bg-cyber-magenta/10 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-cyber-cyan/10 rounded-full"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-cyber-magenta/5 rounded-full"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
+            <!-- Left Content -->
+            <div class="text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 mb-6">
+                    <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
+                    <span class="text-xs font-orbitron text-cyber-cyan">UNIDAD 1</span>
+                </div>
+                
+                <h1 class="font-orbitron text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                    <span class="text-white">Fundamentos de</span><br>
+                    <span class="glow-text text-cyber-cyan">IA para Administracion</span>
+                </h1>
+                
+                <p class="text-lg text-gray-400 font-rajdhani mb-8 max-w-lg">
+                    Descubre como la Inteligencia Artificial puede transformar tu trabajo administrativo. 
+                    Aprende los conceptos fundamentales y configura tu primer asistente IA.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="#lecciones" class="neon-btn px-8 py-4 rounded-xl bg-gradient-to-r from-cyber-cyan to-cyber-purple text-black font-orbitron font-bold text-sm hover:shadow-lg hover:shadow-cyber-cyan/30 transition-all">
+                        <i class="fa-solid fa-play mr-2"></i> COMENZAR UNIDAD
+                    </a>
+                    <a href="#objetivos" class="px-8 py-4 rounded-xl border border-cyber-cyan/30 text-cyber-cyan font-orbitron text-sm hover:bg-cyber-cyan/10 transition-all">
+                        <i class="fa-solid fa-list-check mr-2"></i> VER OBJETIVOS
+                    </a>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-white/10">
+                    <div>
+                        <p class="font-orbitron text-3xl font-bold text-cyber-cyan">4</p>
+                        <p class="text-xs text-gray-500 font-rajdhani">Lecciones</p>
+                    </div>
+                    <div>
+                        <p class="font-orbitron text-3xl font-bold text-cyber-gold">10</p>
+                        <p class="text-xs text-gray-500 font-rajdhani">Preguntas</p>
+                    </div>
+                    <div>
+                        <p class="font-orbitron text-3xl font-bold text-cyber-magenta">1</p>
+                        <p class="text-xs text-gray-500 font-rajdhani">Actividad</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Visual -->
+            <div class="relative float-medium">
+                <div class="gradient-border p-2">
+                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=500&fit=crop" 
+                         alt="Inteligencia Artificial" 
+                         class="rounded-2xl w-full h-auto object-cover"
+                         style="filter: contrast(1.1) saturate(1.1);">
+                </div>
+                
+                <!-- Floating Badge -->
+                <div class="absolute -top-4 -right-4 px-4 py-2 rounded-xl bg-cyber-dark border border-cyber-gold/50 float-fast">
+                    <p class="text-xs font-orbitron text-cyber-gold">IA GENERATIVA</p>
+                </div>
+                
+                <!-- Floating Robot Icon -->
+                <div class="absolute -bottom-6 -left-6 w-20 h-20 rounded-2xl bg-gradient-to-br from-cyber-cyan/20 to-cyber-purple/20 border border-cyber-cyan/30 flex items-center justify-center backdrop-blur-xl float-slow">
+                    <i class="fa-solid fa-microchip text-3xl text-cyber-cyan"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+            <p class="text-xs text-gray-500 font-rajdhani">Scroll para continuar</p>
+            <i class="fa-solid fa-chevron-down text-cyber-cyan"></i>
+        </div>
+    </header>
+
+    <!-- Objetivos Section -->
+    <section id="objetivos" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal-section">
+                <div class="text-center mb-16">
+                    <p class="text-cyber-cyan font-orbitron text-xs tracking-[0.3em] mb-4">OBJETIVOS DE APRENDIZAJE</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        Que lograras en esta <span class="text-cyber-cyan">unidad</span>
+                    </h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Objetivo 1 -->
+                    <div class="holo-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-cyber-cyan/20 to-cyber-cyan/5 border border-cyber-cyan/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-brain text-2xl text-cyber-cyan"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Comprender IA</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Que es la IA y como se aplica en administracion</p>
+                    </div>
+
+                    <!-- Objetivo 2 -->
+                    <div class="holo-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-cyber-magenta/20 to-cyber-magenta/5 border border-cyber-magenta/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-rotate text-2xl text-cyber-magenta"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Identificar Oportunidades</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Oportunidades de automatizacion en tu trabajo</p>
+                    </div>
+
+                    <!-- Objetivo 3 -->
+                    <div class="holo-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-cyber-gold/20 to-cyber-gold/5 border border-cyber-gold/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-toolbox text-2xl text-cyber-gold"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Conocer Herramientas</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Principales herramientas de IA para administradores</p>
+                    </div>
+
+                    <!-- Objetivo 4 -->
+                    <div class="holo-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-cyber-purple/20 to-cyber-purple/5 border border-cyber-purple/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-robot text-2xl text-cyber-purple"></i>
+                        </div>
+                        <h3 class="font-orbitron text-sm font-bold mb-2">Configurar Asistente</h3>
+                        <p class="text-xs text-gray-400 font-rajdhani">Tu primer asistente de IA funcional</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lecciones Section -->
+    <section id="lecciones" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal-section">
+                <div class="text-center mb-16">
+                    <p class="text-cyber-magenta font-orbitron text-xs tracking-[0.3em] mb-4">CONTENIDO</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        4 <span class="text-cyber-cyan">Lecciones</span> Fundamentales
+                    </h2>
+                </div>
+
+                <!-- Leccion 1.1 -->
+                <div class="mb-12">
+                    <div class="gradient-border rounded-3xl overflow-hidden">
+                        <div class="bg-cyber-darker p-8">
+                            <div class="flex items-start gap-6 mb-6">
+                                <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-cyber-cyan to-cyber-blue flex items-center justify-center">
+                                    <span class="font-orbitron text-xl font-bold text-black">1.1</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-xl md:text-2xl font-bold mb-2">
+                                        Que es la IA y por que los administradores la necesitan
+                                    </h3>
+                                    <p class="text-sm text-gray-400 font-rajdhani">
+                                        La Inteligencia Artificial ha dejado de ser ciencia ficcion para convertirse en la herramienta mas poderosa del administrador moderno.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Tabs -->
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <button onclick="openTab(event, 'tab1-concepto')" class="tab-btn active px-4 py-2 rounded-lg text-xs font-orbitron transition-all">Concepto</button>
+                                <button onclick="openTab(event, 'tab1-tipos')" class="tab-btn px-4 py-2 rounded-lg text-xs font-orbitron bg-white/5 border border-white/10 hover:border-cyber-cyan/50 transition-all">Tipos de IA</button>
+                                <button onclick="openTab(event, 'tab1-beneficios')" class="tab-btn px-4 py-2 rounded-lg text-xs font-orbitron bg-white/5 border border-white/10 hover:border-cyber-cyan/50 transition-all">Beneficios</button>
+                                <button onclick="openTab(event, 'tab1-casos')" class="tab-btn px-4 py-2 rounded-lg text-xs font-orbitron bg-white/5 border border-white/10 hover:border-cyber-cyan/50 transition-all">Casos de Uso</button>
+                            </div>
+
+                            <!-- Tab Content -->
+                            <div id="tab1-concepto" class="tab-content">
+                                <div class="grid lg:grid-cols-2 gap-8">
+                                    <div>
+                                        <h4 class="font-orbitron text-lg font-bold text-cyber-cyan mb-4">
+                                            <i class="fa-solid fa-lightbulb mr-2"></i> Definicion
+                                        </h4>
+                                        <p class="text-gray-300 font-rajdhani mb-4 leading-relaxed">
+                                            La IA es la <strong class="text-cyber-cyan">capacidad de las maquinas</strong> para realizar tareas que normalmente requieren inteligencia humana: 
+                                            escribir, analizar, decidir, planificar y aprender.
+                                        </p>
+                                        
+                                        <div class="bg-cyber-cyan/5 border border-cyber-cyan/20 rounded-xl p-4 mb-4">
+                                            <p class="text-xs text-cyber-cyan font-orbitron mb-2">DATO IMPORTANTE</p>
+                                            <p class="text-sm text-gray-300 font-rajdhani">
+                                                La IA no reemplaza al administrador, lo <strong>pOTENCIA</strong> para hacer mas en menos tiempo.
+                                            </p>
+                                        </div>
+
+                                        <!-- Myths vs Reality -->
+                                        <div class="space-y-3">
+                                            <div class="flex items-center gap-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+                                                <i class="fa-solid fa-xmark text-red-400"></i>
+                                                <p class="text-xs text-gray-300"><strong class="text-red-400">MITO:</strong> "La IA reemplazara a los administradores"</p>
+                                            </div>
+                                            <div class="flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+                                                <i class="fa-solid fa-check text-green-400"></i>
+                                                <p class="text-xs text-gray-300"><strong class="text-green-400">REALIDAD:</strong> La IA potencia a los administradores</p>
+                                            </div>
+                                            <div class="flex items-center gap-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+                                                <i class="fa-solid fa-xmark text-red-400"></i>
+                                                <p class="text-xs text-gray-300"><strong class="text-red-400">MITO:</strong> "Necesitas ser programador para usar IA"</p>
+                                            </div>
+                                            <div class="flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+                                                <i class="fa-solid fa-check text-green-400"></i>
+                                                <p class="text-xs text-gray-300"><strong class="text-green-400">REALIDAD:</strong> Las herramientas modernas son faciles de usar</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="relative">
+                                        <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=500&h=400&fit=crop" 
+                                             alt="Robot IA" 
+                                             class="rounded-2xl w-full h-auto object-cover border border-cyber-cyan/20">
+                                        <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-cyber-dark/90 backdrop-blur-xl border border-cyber-cyan/30">
+                                            <p class="text-xs font-orbitron text-cyber-cyan mb-1">REFLEXION</p>
+                                            <p class="text-sm text-gray-300 font-rajdhani">
+                                                Que tarea administrativa repetitiva te gustaria automatizar primero?
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="tab1-tipos" class="tab-content hidden">
+                                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <div class="holo-card rounded-xl p-5">
+                                        <div class="w-12 h-12 rounded-lg bg-cyber-cyan/20 flex items-center justify-center mb-3">
+                                            <i class="fa-solid fa-wand-magic-sparkles text-cyber-cyan text-xl"></i>
+                                        </div>
+                                        <h5 class="font-orbitron text-sm font-bold mb-2">IA Generativa</h5>
+                                        <p class="text-xs text-gray-400 mb-3">Crea contenido nuevo</p>
+                                        <div class="flex flex-wrap gap-1">
+                                            <span class="px-2 py-1 rounded bg-cyber-cyan/10 text-cyber-cyan text-[10px]">ChatGPT</span>
+                                            <span class="px-2 py-1 rounded bg-cyber-cyan/10 text-cyber-cyan text-[10px]">Claude</span>
+                                            <span class="px-2 py-1 rounded bg-cyber-cyan/10 text-cyber-cyan text-[10px]">Gemini</span>
+                                        </div>
+                                    </div>
+                                    <div class="holo-card rounded-xl p-5">
+                                        <div class="w-12 h-12 rounded-lg bg-cyber-magenta/20 flex items-center justify-center mb-3">
+                                            <i class="fa-solid fa-chart-line text-cyber-magenta text-xl"></i>
+                                        </div>
+                                        <h5 class="font-orbitron text-sm font-bold mb-2">IA de Analisis</h5>
+                                        <p class="text-xs text-gray-400 mb-3">Procesa datos y genera insights</p>
+                                        <div class="flex flex-wrap gap-1">
+                                            <span class="px-2 py-1 rounded bg-cyber-magenta/10 text-cyber-magenta text-[10px]">Code Interpreter</span>
+                                            <span class="px-2 py-1 rounded bg-cyber-magenta/10 text-cyber-magenta text-[10px]">Julius AI</span>
+                                        </div>
+                                    </div>
+                                    <div class="holo-card rounded-xl p-5">
+                                        <div class="w-12 h-12 rounded-lg bg-cyber-gold/20 flex items-center justify-center mb-3">
+                                            <i class="fa-solid fa-gears text-cyber-gold text-xl"></i>
+                                        </div>
+                                        <h5 class="font-orbitron text-sm font-bold mb-2">IA de Automatizacion</h5>
+                                        <p class="text-xs text-gray-400 mb-3">Ejecuta tareas repetitivas</p>
+                                        <div class="flex flex-wrap gap-1">
+                                            <span class="px-2 py-1 rounded bg-cyber-gold/10 text-cyber-gold text-[10px]">Zapier</span>
+                                            <span class="px-2 py-1 rounded bg-cyber-gold/10 text-cyber-gold text-[10px]">Make</span>
+                                        </div>
+                                    </div>
+                                    <div class="holo-card rounded-xl p-5">
+                                        <div class="w-12 h-12 rounded-lg bg-cyber-purple/20 flex items-center justify-center mb-3">
+                                            <i class="fa-solid fa-comments text-cyber-purple text-xl"></i>
+                                        </div>
+                                        <h5 class="font-orbitron text-sm font-bold mb-2">IA Conversacional</h5>
+                                        <p class="text-xs text-gray-400 mb-3">Chatbots y asistentes</p>
+                                        <div class="flex flex-wrap gap-1">
+                                            <span class="px-2 py-1 rounded bg-cyber-purple/10 text-cyber-purple text-[10px]">Otter.ai</span>
+                                            <span class="px-2 py-1 rounded bg-cyber-purple/10 text-cyber-purple text-[10px]">Fireflies</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="tab1-beneficios" class="tab-content hidden">
+                                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div class="flex items-center gap-4 p-4 rounded-xl bg-cyber-cyan/5 border border-cyber-cyan/20">
+                                        <div class="w-14 h-14 rounded-full bg-cyber-cyan/20 flex items-center justify-center flex-shrink-0">
+                                            <span class="font-orbitron text-xl font-bold text-cyber-cyan">70%</span>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-orbitron text-sm font-bold">Reduccion de Tareas</h5>
+                                            <p class="text-xs text-gray-400">Tareas repetitivas reducidas</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 p-4 rounded-xl bg-cyber-magenta/5 border border-cyber-magenta/20">
+                                        <div class="w-14 h-14 rounded-full bg-cyber-magenta/20 flex items-center justify-center flex-shrink-0">
+                                            <span class="font-orbitron text-xl font-bold text-cyber-magenta">10x</span>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-orbitron text-sm font-bold">Velocidad</h5>
+                                            <p class="text-xs text-gray-400">En creacion de documentos</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 p-4 rounded-xl bg-cyber-gold/5 border border-cyber-gold/20">
+                                        <div class="w-14 h-14 rounded-full bg-cyber-gold/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-bolt text-cyber-gold text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-orbitron text-sm font-bold">Analisis Instantaneo</h5>
+                                            <p class="text-xs text-gray-400">Segundos vs. horas</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 p-4 rounded-xl bg-cyber-purple/5 border border-cyber-purple/20">
+                                        <div class="w-14 h-14 rounded-full bg-cyber-purple/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-clock text-cyber-purple text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-orbitron text-sm font-bold">Disponibilidad 24/7</h5>
+                                            <p class="text-xs text-gray-400">Siempre disponible</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 p-4 rounded-xl bg-green-500/5 border border-green-500/20">
+                                        <div class="w-14 h-14 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-check-double text-green-400 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-orbitron text-sm font-bold">Cero Errores</h5>
+                                            <p class="text-xs text-gray-400">En calculos y procesamiento</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="tab1-casos" class="tab-content hidden">
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:border-cyber-cyan/50 transition-all">
+                                            <i class="fa-solid fa-envelope text-cyber-cyan"></i>
+                                            <p class="text-sm text-gray-300">Redaccion automatica de correos y memorandos</p>
+                                        </div>
+                                        <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:border-cyber-cyan/50 transition-all">
+                                            <i class="fa-solid fa-table text-cyber-magenta"></i>
+                                            <p class="text-sm text-gray-300">Analisis de hojas de calculo con lenguaje natural</p>
+                                        </div>
+                                        <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:border-cyber-cyan/50 transition-all">
+                                            <i class="fa-solid fa-calendar text-cyber-gold"></i>
+                                            <p class="text-sm text-gray-300">Programacion inteligente de reuniones</p>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:border-cyber-cyan/50 transition-all">
+                                            <i class="fa-solid fa-file-lines text-cyber-purple"></i>
+                                            <p class="text-sm text-gray-300">Generacion de reportes ejecutivos</p>
+                                        </div>
+                                        <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:border-cyber-cyan/50 transition-all">
+                                            <i class="fa-solid fa-microphone text-cyber-cyan"></i>
+                                            <p class="text-sm text-gray-300">Transcripcion y resumen de reuniones</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leccion 1.2 -->
+                <div class="mb-12">
+                    <div class="gradient-border rounded-3xl overflow-hidden">
+                        <div class="bg-cyber-darker p-8">
+                            <div class="flex items-start gap-6 mb-6">
+                                <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-cyber-magenta to-cyber-purple flex items-center justify-center">
+                                    <span class="font-orbitron text-xl font-bold text-white">1.2</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-xl md:text-2xl font-bold mb-2">
+                                        Herramientas de IA Esenciales para Administradores
+                                    </h3>
+                                    <p class="text-sm text-gray-400 font-rajdhani">
+                                        Conoce las principales herramientas categorizadas por funcion y aprende cual usar en cada situacion.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Categories Grid -->
+                            <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                                <!-- Category 1 -->
+                                <div class="holo-card rounded-xl p-5">
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <div class="w-10 h-10 rounded-lg bg-cyber-cyan/20 flex items-center justify-center">
+                                            <i class="fa-solid fa-robot text-cyber-cyan"></i>
+                                        </div>
+                                        <h4 class="font-orbitron text-sm font-bold">Asistentes de IA Generativa</h4>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">ChatGPT (OpenAI)</span>
+                                            <span class="text-[10px] text-cyber-cyan font-orbitron">VERSATIL</span>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">Claude (Anthropic)</span>
+                                            <span class="text-[10px] text-cyber-magenta font-orbitron">DOCUMENTOS</span>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">Gemini (Google)</span>
+                                            <span class="text-[10px] text-cyber-gold font-orbitron">WORKSPACE</span>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">Microsoft Copilot</span>
+                                            <span class="text-[10px] text-cyber-purple font-orbitron">OFFICE 365</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Category 2 -->
+                                <div class="holo-card rounded-xl p-5">
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <div class="w-10 h-10 rounded-lg bg-cyber-magenta/20 flex items-center justify-center">
+                                            <i class="fa-solid fa-envelope text-cyber-magenta"></i>
+                                        </div>
+                                        <h4 class="font-orbitron text-sm font-bold">IA para Gestion de Correos</h4>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">Gmail con Gemini</span>
+                                            <span class="text-[10px] text-cyber-cyan font-orbitron">RESPUESTAS</span>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">Superhuman</span>
+                                            <span class="text-[10px] text-cyber-magenta font-orbitron">TRIAJE</span>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">SaneBox</span>
+                                            <span class="text-[10px] text-cyber-gold font-orbitron">ORGANIZACION</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Category 3 -->
+                                <div class="holo-card rounded-xl p-5">
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <div class="w-10 h-10 rounded-lg bg-cyber-gold/20 flex items-center justify-center">
+                                            <i class="fa-solid fa-video text-cyber-gold"></i>
+                                        </div>
+                                        <h4 class="font-orbitron text-sm font-bold">IA para Reuniones</h4>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">Otter.ai</span>
+                                            <span class="text-[10px] text-cyber-cyan font-orbitron">TRANSCRIPCION</span>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">Fireflies.ai</span>
+                                            <span class="text-[10px] text-cyber-magenta font-orbitron">NOTAS</span>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">Grain</span>
+                                            <span class="text-[10px] text-cyber-gold font-orbitron">GRABACION</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Category 4 -->
+                                <div class="holo-card rounded-xl p-5">
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <div class="w-10 h-10 rounded-lg bg-cyber-purple/20 flex items-center justify-center">
+                                            <i class="fa-solid fa-chart-pie text-cyber-purple"></i>
+                                        </div>
+                                        <h4 class="font-orbitron text-sm font-bold">IA para Datos y Analisis</h4>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">ChatGPT Code Interpreter</span>
+                                            <span class="text-[10px] text-cyber-cyan font-orbitron">EXCEL/CSV</span>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">Julius AI</span>
+                                            <span class="text-[10px] text-cyber-magenta font-orbitron">CONVERSACIONAL</span>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                                            <span class="text-sm text-gray-300">Rows.com</span>
+                                            <span class="text-[10px] text-cyber-gold font-orbitron">SHEETS IA</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Comparativa -->
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm">
+                                    <thead>
+                                        <tr class="border-b border-white/10">
+                                            <th class="text-left p-3 font-orbitron text-cyber-cyan">Herramienta</th>
+                                            <th class="text-left p-3 font-orbitron text-cyber-magenta">Version Gratuita</th>
+                                            <th class="text-left p-3 font-orbitron text-cyber-gold">Version Premium</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="font-rajdhani">
+                                        <tr class="border-b border-white/5 hover:bg-white/5">
+                                            <td class="p-3">ChatGPT</td>
+                                            <td class="p-3 text-gray-400">GPT-3.5, basico</td>
+                                            <td class="p-3">GPT-4, analisis de archivos</td>
+                                        </tr>
+                                        <tr class="border-b border-white/5 hover:bg-white/5">
+                                            <td class="p-3">Claude</td>
+                                            <td class="p-3 text-gray-400">Claude Sonnet</td>
+                                            <td class="p-3">Claude Opus, mayor limite</td>
+                                        </tr>
+                                        <tr class="border-b border-white/5 hover:bg-white/5">
+                                            <td class="p-3">Gemini</td>
+                                            <td class="p-3 text-gray-400">Acceso basico</td>
+                                            <td class="p-3">Gemini Advanced</td>
+                                        </tr>
+                                        <tr class="hover:bg-white/5">
+                                            <td class="p-3">Notion AI</td>
+                                            <td class="p-3 text-gray-400">20 consultas gratis</td>
+                                            <td class="p-3">Ilimitado</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Recommendation -->
+                            <div class="mt-6 p-4 rounded-xl bg-gradient-to-r from-cyber-cyan/10 to-cyber-magenta/10 border border-cyber-cyan/30">
+                                <div class="flex items-start gap-3">
+                                    <i class="fa-solid fa-lightbulb text-cyber-gold text-xl mt-1"></i>
+                                    <div>
+                                        <p class="font-orbitron text-sm font-bold text-cyber-gold mb-1">Recomendacion del Instructor</p>
+                                        <p class="text-sm text-gray-300 font-rajdhani">
+                                            Comienza con <strong class="text-cyber-cyan">ChatGPT gratuito</strong> + <strong class="text-cyber-magenta">Gemini</strong> (si usas Gmail) + <strong class="text-cyber-gold">Notion AI</strong>. 
+                                            Estas 3 herramientas cubren el 90% de necesidades administrativas.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Activity -->
+                            <div class="mt-6 p-4 rounded-xl bg-cyber-dark border border-cyber-magenta/30">
+                                <p class="font-orbitron text-xs text-cyber-magenta mb-2"><i class="fa-solid fa-pencil mr-2"></i>ACTIVIDAD PRACTICA</p>
+                                <p class="text-sm text-gray-300 font-rajdhani">
+                                    Crea una cuenta gratuita en <strong class="text-cyber-cyan">ChatGPT</strong> y <strong class="text-cyber-gold">Notion AI</strong>. Guarda los enlaces en tus favoritos.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leccion 1.3 -->
+                <div class="mb-12">
+                    <div class="gradient-border rounded-3xl overflow-hidden">
+                        <div class="bg-cyber-darker p-8">
+                            <div class="flex items-start gap-6 mb-6">
+                                <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-cyber-gold to-cyber-cyan flex items-center justify-center">
+                                    <span class="font-orbitron text-xl font-bold text-black">1.3</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-xl md:text-2xl font-bold mb-2">
+                                        Tu Primer Prompt: Como Hablar con la IA
+                                    </h3>
+                                    <p class="text-sm text-gray-400 font-rajdhani">
+                                        La diferencia entre un resultado mediocre y uno excelente esta en COMO le preguntas. Aprende prompt engineering basico.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Prompt Anatomy -->
+                            <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <h4 class="font-orbitron text-sm font-bold text-red-400 mb-3"><i class="fa-solid fa-xmark mr-2"></i>EJEMPLO MALO</h4>
+                                    <div class="code-block p-4 pt-6">
+                                        <p class="text-gray-300 font-mono text-sm">"Escribe un correo"</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2 font-rajdhani">Demasiado vago, sin contexto ni especificaciones</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-orbitron text-sm font-bold text-green-400 mb-3"><i class="fa-solid fa-check mr-2"></i>EJEMPLO BUENO</h4>
+                                    <div class="code-block p-4 pt-6">
+                                        <p class="text-gray-300 font-mono text-sm leading-relaxed">"Soy administrador de una empresa de logistica. Escribe un correo profesional para recordar a los proveedores el vencimiento de facturas del mes. Tono cordial pero firme. Maximo 150 palabras. Incluye linea de asunto."</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2 font-rajdhani">Contexto + Tarea + Restricciones + Formato</p>
+                                </div>
+                            </div>
+
+                            <!-- Formula -->
+                            <div class="mb-6">
+                                <h4 class="font-orbitron text-lg font-bold text-cyber-cyan mb-4">
+                                    <i class="fa-solid fa-flask mr-2"></i>Formula del Prompt Perfecto
+                                </h4>
+                                <div class="grid md:grid-cols-4 gap-4">
+                                    <div class="text-center p-4 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/30">
+                                        <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-cyber-cyan flex items-center justify-center text-black font-bold">1</div>
+                                        <p class="font-orbitron text-xs font-bold text-cyber-cyan mb-1">DEFINE TU ROL</p>
+                                        <p class="text-[10px] text-gray-400">"Soy administrador/a de..."</p>
+                                    </div>
+                                    <div class="text-center p-4 rounded-xl bg-cyber-magenta/10 border border-cyber-magenta/30">
+                                        <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-cyber-magenta flex items-center justify-center text-white font-bold">2</div>
+                                        <p class="font-orbitron text-xs font-bold text-cyber-magenta mb-1">DESCRIBE LA TAREA</p>
+                                        <p class="text-[10px] text-gray-400">"Necesito que..."</p>
+                                    </div>
+                                    <div class="text-center p-4 rounded-xl bg-cyber-gold/10 border border-cyber-gold/30">
+                                        <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-cyber-gold flex items-center justify-center text-black font-bold">3</div>
+                                        <p class="font-orbitron text-xs font-bold text-cyber-gold mb-1">ESPECIFICA FORMATO</p>
+                                        <p class="text-[10px] text-gray-400">"En forma de tabla/lista..."</p>
+                                    </div>
+                                    <div class="text-center p-4 rounded-xl bg-cyber-purple/10 border border-cyber-purple/30">
+                                        <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-cyber-purple flex items-center justify-center text-white font-bold">4</div>
+                                        <p class="font-orbitron text-xs font-bold text-cyber-purple mb-1">ANADE RESTRICCIONES</p>
+                                        <p class="text-[10px] text-gray-400">"Maximo X palabras, tono Y..."</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Techniques -->
+                            <div class="mb-6">
+                                <h4 class="font-orbitron text-lg font-bold text-cyber-magenta mb-4">
+                                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Tecnicas Avanzadas
+                                </h4>
+                                <div class="grid md:grid-cols-3 gap-4">
+                                    <div class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-cyber-cyan/50 transition-all">
+                                        <h5 class="font-orbitron text-sm font-bold text-cyber-cyan mb-2">Chain of Thought</h5>
+                                        <p class="text-xs text-gray-400 mb-2">Cadena de Pensamiento</p>
+                                        <p class="text-xs text-gray-300">Anade: "Explica tu razonamiento paso a paso"</p>
+                                    </div>
+                                    <div class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-cyber-magenta/50 transition-all">
+                                        <h5 class="font-orbitron text-sm font-bold text-cyber-magenta mb-2">Few-Shot Learning</h5>
+                                        <p class="text-xs text-gray-400 mb-2">Aprendizaje por Ejemplos</p>
+                                        <p class="text-xs text-gray-300">Muestra 2-3 ejemplos de lo que quieres</p>
+                                    </div>
+                                    <div class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-cyber-gold/50 transition-all">
+                                        <h5 class="font-orbitron text-sm font-bold text-cyber-gold mb-2">Role Playing</h5>
+                                        <p class="text-xs text-gray-400 mb-2">Juego de Roles</p>
+                                        <p class="text-xs text-gray-300">"Actua como un experto en..."</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Golden Rule -->
+                            <div class="p-4 rounded-xl bg-gradient-to-r from-cyber-gold/10 to-cyber-cyan/10 border border-cyber-gold/30">
+                                <p class="font-orbitron text-sm font-bold text-cyber-gold mb-1"><i class="fa-solid fa-star mr-2"></i>REGLA DE ORO</p>
+                                <p class="text-lg text-white font-rajdhani font-bold">
+                                    "Si un humano no entenderia tu instruccion, la IA tampoco."
+                                </p>
+                            </div>
+
+                            <!-- Activity -->
+                            <div class="mt-6 p-4 rounded-xl bg-cyber-dark border border-cyber-gold/30">
+                                <p class="font-orbitron text-xs text-cyber-gold mb-2"><i class="fa-solid fa-pencil mr-2"></i>ACTIVIDAD PRACTICA</p>
+                                <p class="text-sm text-gray-300 font-rajdhani">
+                                    Escribe 3 prompts para tareas que haces esta semana. Usa la formula: <strong class="text-cyber-cyan">[CONTEXTO + TAREA + FORMATO + RESTRICCIONES]</strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leccion 1.4 -->
+                <div class="mb-12">
+                    <div class="gradient-border rounded-3xl overflow-hidden">
+                        <div class="bg-cyber-darker p-8">
+                            <div class="flex items-start gap-6 mb-6">
+                                <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-cyber-purple to-cyber-magenta flex items-center justify-center">
+                                    <span class="font-orbitron text-xl font-bold text-white">1.4</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-orbitron text-xl md:text-2xl font-bold mb-2">
+                                        Configuracion de tu Espacio de Trabajo IA
+                                    </h3>
+                                    <p class="text-sm text-gray-400 font-rajdhani">
+                                        Para maximizar la productividad, necesitas integrar la IA en tu flujo de trabajo actual, no trabajar en paralelo.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Steps -->
+                            <div class="space-y-6">
+                                <!-- Step 1 -->
+                                <div class="flex gap-4">
+                                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-cyber-cyan/20 flex items-center justify-center border border-cyber-cyan/30">
+                                        <span class="font-orbitron font-bold text-cyber-cyan">01</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-orbitron text-sm font-bold text-cyber-cyan mb-2">Extensiones de Navegador Esenciales</h4>
+                                        <div class="grid sm:grid-cols-3 gap-3">
+                                            <div class="p-3 rounded-lg bg-white/5 border border-white/10">
+                                                <p class="text-xs font-bold text-white mb-1">ChatGPT Everywhere</p>
+                                                <p class="text-[10px] text-gray-400">Ctrl+Shift+P en cualquier sitio</p>
+                                            </div>
+                                            <div class="p-3 rounded-lg bg-white/5 border border-white/10">
+                                                <p class="text-xs font-bold text-white mb-1">Notion Web Clipper</p>
+                                                <p class="text-[10px] text-gray-400">Guarda contenido con IA</p>
+                                            </div>
+                                            <div class="p-3 rounded-lg bg-white/5 border border-white/10">
+                                                <p class="text-xs font-bold text-white mb-1">Grammarly</p>
+                                                <p class="text-[10px] text-gray-400">Correccion en tiempo real</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 2 -->
+                                <div class="flex gap-4">
+                                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-cyber-magenta/20 flex items-center justify-center border border-cyber-magenta/30">
+                                        <span class="font-orbitron font-bold text-cyber-magenta">02</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-orbitron text-sm font-bold text-cyber-magenta mb-2">Atajos de Teclado IA</h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            <div class="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-xs">
+                                                <kbd class="font-mono text-cyber-cyan">Ctrl + Shift + A</kbd> → Abrir ChatGPT
+                                            </div>
+                                            <div class="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-xs">
+                                                <kbd class="font-mono text-cyber-magenta">Ctrl + Shift + N</kbd> → Nueva nota Notion
+                                            </div>
+                                            <div class="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-xs">
+                                                <kbd class="font-mono text-cyber-gold">Alt + G</kbd> → Activar Grammarly
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 3 -->
+                                <div class="flex gap-4">
+                                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-cyber-gold/20 flex items-center justify-center border border-cyber-gold/30">
+                                        <span class="font-orbitron font-bold text-cyber-gold">03</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-orbitron text-sm font-bold text-cyber-gold mb-2">Organizacion de Prompts</h4>
+                                        <p class="text-xs text-gray-400 mb-3">Crea una biblioteca personal de prompts con esta estructura:</p>
+                                        <div class="p-4 rounded-lg bg-cyber-dark border border-cyber-gold/20 font-mono text-xs text-gray-300">
+                                            <p class="text-cyber-gold">📁 Prompts IA Administracion/</p>
+                                            <p class="ml-4">📁 Correos/</p>
+                                            <p class="ml-8">- Solicitud de informacion</p>
+                                            <p class="ml-8">- Recordatorios</p>
+                                            <p class="ml-4">📁 Reportes/</p>
+                                            <p class="ml-4">📁 Documentos/</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 4 -->
+                                <div class="flex gap-4">
+                                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-cyber-purple/20 flex items-center justify-center border border-cyber-purple/30">
+                                        <span class="font-orbitron font-bold text-cyber-purple">04</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-orbitron text-sm font-bold text-cyber-purple mb-2">Integracion con Google Workspace / Office 365</h4>
+                                        <div class="grid md:grid-cols-2 gap-4">
+                                            <div class="p-4 rounded-lg bg-white/5 border border-white/10">
+                                                <p class="text-xs font-bold text-cyber-cyan mb-2"><i class="fa-brands fa-google mr-1"></i>Para usuarios de Google</p>
+                                                <ul class="text-xs text-gray-400 space-y-1">
+                                                    <li>• Activa Gemini en Gmail</li>
+                                                    <li>• Usa "Help me write" en Docs</li>
+                                                    <li>• Conecta Sheets con ChatGPT</li>
+                                                </ul>
+                                            </div>
+                                            <div class="p-4 rounded-lg bg-white/5 border border-white/10">
+                                                <p class="text-xs font-bold text-cyber-magenta mb-2"><i class="fa-brands fa-microsoft mr-1"></i>Para usuarios de Microsoft</p>
+                                                <ul class="text-xs text-gray-400 space-y-1">
+                                                    <li>• Activa Copilot en Office 365</li>
+                                                    <li>• IA en Outlook para correos</li>
+                                                    <li>• Excel con Power Automate</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Daily Flow -->
+                            <div class="mt-8 p-6 rounded-xl bg-gradient-to-r from-cyber-cyan/5 to-cyber-magenta/5 border border-cyber-cyan/20">
+                                <h4 class="font-orbitron text-sm font-bold text-cyber-cyan mb-4"><i class="fa-solid fa-clock mr-2"></i>FLUJO DE TRABAJO DIARIO HIBRIDO IA + HUMANO</h4>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                                    <div class="p-3 rounded-lg bg-white/5">
+                                        <p class="text-xs text-cyber-cyan font-orbitron mb-1">8:00 AM</p>
+                                        <p class="text-[10px] text-gray-400">IA resume correos</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-white/5">
+                                        <p class="text-xs text-cyber-magenta font-orbitron mb-1">8:15 AM</p>
+                                        <p class="text-[10px] text-gray-400">Tu priorizas y respondes</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-white/5">
+                                        <p class="text-xs text-cyber-gold font-orbitron mb-1">9:00 AM</p>
+                                        <p class="text-[10px] text-gray-400">IA transcribe reunion</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-white/5">
+                                        <p class="text-xs text-cyber-purple font-orbitron mb-1">11:00 AM</p>
+                                        <p class="text-[10px] text-gray-400">IA genera borrador</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Activity -->
+                            <div class="mt-6 p-4 rounded-xl bg-cyber-dark border border-cyber-purple/30">
+                                <p class="font-orbitron text-xs text-cyber-purple mb-2"><i class="fa-solid fa-pencil mr-2"></i>ACTIVIDAD PRACTICA</p>
+                                <p class="text-sm text-gray-300 font-rajdhani">
+                                    Instala 2 extensiones: <strong class="text-cyber-cyan">ChatGPT</strong> y <strong class="text-cyber-gold">Grammarly</strong>. Crea una carpeta en tu navegador llamada "Herramientas IA" y guarda los accesos directos.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Evaluacion Section -->
+    <section id="evaluacion" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal-section">
+                <div class="text-center mb-16">
+                    <p class="text-cyber-gold font-orbitron text-xs tracking-[0.3em] mb-4">EVALUACION</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        Cuestionario <span class="text-cyber-cyan">Unidad 1</span>
+                    </h2>
+                    <p class="text-gray-400 font-rajdhani mt-4">10 preguntas - 70% para aprobacion</p>
+                </div>
+
+                <div class="gradient-border rounded-3xl overflow-hidden">
+                    <div class="bg-cyber-darker p-8">
+                        <!-- Progress -->
+                        <div class="mb-8">
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="text-gray-400">Progreso</span>
+                                <span class="text-cyber-cyan font-orbitron" id="progress-text">0/10</span>
+                            </div>
+                            <div class="progress-cyber h-2">
+                                <div class="progress-cyber-fill" id="progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Quiz Container -->
+                        <div id="quiz-container">
+                            <!-- Questions will be rendered here -->
+                        </div>
+
+                        <!-- Results -->
+                        <div id="quiz-results" class="hidden text-center py-12">
+                            <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-cyber-cyan to-cyber-magenta flex items-center justify-center">
+                                <span class="font-orbitron text-4xl font-bold text-white" id="score-display">0%</span>
+                            </div>
+                            <h3 class="font-orbitron text-2xl font-bold mb-2" id="result-title">Resultado</h3>
+                            <p class="text-gray-400 font-rajdhani mb-6" id="result-message">Mensaje</p>
+                            <button onclick="resetQuiz()" class="neon-btn px-8 py-4 rounded-xl bg-gradient-to-r from-cyber-cyan to-cyber-purple text-black font-orbitron font-bold text-sm">
+                                <i class="fa-solid fa-rotate mr-2"></i> REINTENTAR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Actividad Practica Section -->
+    <section id="actividad" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="reveal-section">
+                <div class="text-center mb-16">
+                    <p class="text-cyber-purple font-orbitron text-xs tracking-[0.3em] mb-4">ENTREGABLE</p>
+                    <h2 class="font-orbitron text-3xl md:text-4xl font-bold">
+                        Actividad <span class="text-cyber-magenta">Practica</span>
+                    </h2>
+                </div>
+
+                <div class="gradient-border rounded-3xl overflow-hidden">
+                    <div class="bg-cyber-darker p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyber-magenta to-cyber-purple flex items-center justify-center">
+                                <i class="fa-solid fa-file-lines text-2xl text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-orbitron text-xl font-bold">Documento con 3 Prompts Profesionales</h3>
+                                <p class="text-sm text-gray-400 font-rajdhani">Crea 3 prompts diferentes para tareas administrativas reales</p>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <h4 class="font-orbitron text-sm font-bold text-cyber-cyan mb-3">Instrucciones</h4>
+                                <p class="text-sm text-gray-300 font-rajdhani mb-4">
+                                    Crea 3 prompts diferentes para tareas administrativas reales de tu trabajo usando la formula aprendida.
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2 text-xs text-gray-400">
+                                        <i class="fa-solid fa-check text-cyber-cyan"></i>
+                                        <span>Contexto claro</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-xs text-gray-400">
+                                        <i class="fa-solid fa-check text-cyber-cyan"></i>
+                                        <span>Tarea especifica</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-xs text-gray-400">
+                                        <i class="fa-solid fa-check text-cyber-cyan"></i>
+                                        <span>Formato deseado</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-xs text-gray-400">
+                                        <i class="fa-solid fa-check text-cyber-cyan"></i>
+                                        <span>Restricciones (palabras, tono, etc.)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-orbitron text-sm font-bold text-cyber-gold mb-3">Criterios de Evaluacion</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span class="text-gray-300">Claridad del contexto</span>
+                                            <span class="text-cyber-cyan">25%</span>
+                                        </div>
+                                        <div class="progress-cyber h-2">
+                                            <div class="progress-cyber-fill" style="width: 25%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span class="text-gray-300">Especificidad de la tarea</span>
+                                            <span class="text-cyber-magenta">25%</span>
+                                        </div>
+                                        <div class="progress-cyber h-2">
+                                            <div class="progress-cyber-fill" style="width: 25%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span class="text-gray-300">Formato bien definido</span>
+                                            <span class="text-cyber-gold">25%</span>
+                                        </div>
+                                        <div class="progress-cyber h-2">
+                                            <div class="progress-cyber-fill" style="width: 25%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span class="text-gray-300">Restricciones utiles</span>
+                                            <span class="text-cyber-purple">25%</span>
+                                        </div>
+                                        <div class="progress-cyber h-2">
+                                            <div class="progress-cyber-fill" style="width: 25%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Example -->
+                        <div class="p-4 rounded-xl bg-cyber-dark border border-cyber-cyan/30">
+                            <p class="font-orbitron text-xs text-cyber-cyan mb-2"><i class="fa-solid fa-lightbulb mr-2"></i>EJEMPLO DE ENTREGA</p>
+                            <div class="code-block p-4 pt-6">
+                                <p class="text-gray-300 font-mono text-sm leading-relaxed">
+                                    "Soy administrador de recursos humanos en empresa tecnologica. Redacta correo para empleados anunciando nuevo horario flexible. Tono motivador y positivo. Incluye: beneficios del cambio, fechas de implementacion, y contacto para dudas. Maximo 250 palabras con linea de asunto atractiva."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation Footer -->
+    <footer class="py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="text-center md:text-left">
+                    <p class="font-orbitron text-sm text-gray-400">Unidad 1 de 4 completada</p>
+                    <p class="text-xs text-gray-500 font-rajdhani">Continua con la Unidad 2: Automatizacion de Tareas</p>
+                </div>
+                <div class="flex gap-4">
+                    <a href="#" class="px-6 py-3 rounded-xl border border-white/20 text-gray-400 font-orbitron text-xs hover:border-cyber-cyan hover:text-cyber-cyan transition-all">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> ANTERIOR
+                    </a>
+                    <a href="#" class="neon-btn px-6 py-3 rounded-xl bg-gradient-to-r from-cyber-cyan to-cyber-purple text-black font-orbitron text-xs">
+                        SIGUIENTE <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chat Bot -->
+    <button onclick="toggleChat()" class="bot-trigger" aria-label="Abrir asistente virtual">
+        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=100&h=100&fit=crop&crop=face" alt="Profe Virtual IA">
+    </button>
+
+    <div id="chat-window" class="w-[90vw] md:w-[420px] bg-cyber-dark rounded-[2rem] shadow-2xl border border-cyber-cyan/20 overflow-hidden">
+        <div class="bg-gradient-to-r from-cyber-cyan to-cyber-purple p-5 text-black flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-black/20 rounded-full flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-sm font-orbitron tracking-tight">PROFE VIRTUAL</p>
+                    <p class="text-[9px] opacity-80 font-rajdhani">Asistente Unidad 1</p>
+                </div>
+            </div>
+            <button onclick="toggleChat()" class="hover:rotate-90 transition duration-300" aria-label="Cerrar chat">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+        </div>
+        
+        <div id="chat-content" class="h-[350px] overflow-y-auto p-4 space-y-3 bg-cyber-darker text-xs">
+            <div class="bg-white/5 p-3 rounded-2xl rounded-tl-none mr-8 text-slate-300 border border-white/5">
+                Hola! Soy tu Profe Virtual para la <strong class="text-cyber-cyan">Unidad 1: Fundamentos de IA</strong>. Puedo responder preguntas sobre los contenidos de esta unidad. En que puedo ayudarte?
+            </div>
+        </div>
+
+        <div id="chat-input-area" class="p-4 bg-cyber-dark border-t border-white/5 flex gap-2">
+            <input type="text" id="user-input" placeholder="Escribe tu pregunta..." 
+                   class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-cyber-cyan text-white text-sm font-rajdhani"
+                   aria-label="Escribe tu mensaje">
+            <button onclick="handleChat()" class="bg-gradient-to-r from-cyber-cyan to-cyber-purple text-white w-11 h-11 rounded-xl flex items-center justify-center shadow-lg hover:opacity-90 transition" aria-label="Enviar mensaje">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Knowledge Base for Unit 1
+        const knowledgeBase = {
+            'que es ia': 'La IA (Inteligencia Artificial) es la capacidad de las maquinas para realizar tareas que normalmente requieren inteligencia humana: escribir, analizar, decidir, planificar y aprender.',
+            'tipos de ia': 'Existen 4 tipos principales de IA para administradores:\n1. IA Generativa: Crea contenido (ChatGPT, Claude, Gemini)\n2. IA de Analisis: Procesa datos y genera insights\n3. IA de Automatizacion: Ejecuta tareas repetitivas\n4. IA Conversacional: Chatbots y asistentes virtuales',
+            'prompt': 'Un prompt es la instruccion que le das a la IA. La formula del prompt perfecto es:\n1. Define tu rol: "Soy administrador/a de..."\n2. Describe la tarea: "Necesito que..."\n3. Especifica el formato: "En forma de tabla/lista..."\n4. Anade restricciones: "Maximo X palabras, tono Y..."',
+            'herramientas': 'Las herramientas esenciales para administradores son:\n- ChatGPT (OpenAI): El mas versatil\n- Claude (Anthropic): Excelente para documentos largos\n- Gemini (Google): Integrado con Google Workspace\n- Microsoft Copilot: Potencia Office 365\n- Otter.ai: Para transcribir reuniones\n- Notion AI: Para documentacion',
+            'beneficios': 'Los principales beneficios de usar IA en administracion son:\n- Reduccion de tareas repetitivas en un 70%\n- Velocidad 10x en creacion de documentos\n- Analisis de datos en segundos vs. horas\n- Disponibilidad 24/7 para consultas\n- Cero errores en calculos y procesamiento',
+            'chatgpt gratis': 'La version gratuita de ChatGPT usa GPT-3.5, que es basico pero funcional. La version premium (ChatGPT Plus) usa GPT-4 e incluye analisis de archivos.',
+            'chain of thought': 'Chain of Thought (Cadena de Pensamiento) es una tecnica avanzada de prompting donde le pides a la IA que "explique su razonamiento paso a paso" para obtener respuestas mas precisas.',
+            'regla de oro': 'La Regla de Oro del prompting es: "Si un humano no entenderia tu instruccion, la IA tampoco." Siempre proporciona contexto claro y especificaciones detalladas.',
+            'reunion': 'Para transcribir reuniones automaticamente, las mejores herramientas son:\n- Otter.ai: Transcripcion en tiempo real\n- Fireflies.ai: Notas automaticas de reuniones\n- Grain: Grabacion y resumen de videollamadas',
+            'mitos': 'Mitos comunes sobre IA:\n❌ "La IA reemplazara a los administradores"\n✅ REALIDAD: La IA potencia a los administradores\n\n❌ "Necesitas ser programador para usar IA"\n✅ REALIDAD: Las herramientas modernas son faciles de usar'
+        };
+
+        function toggleChat() { 
+            document.getElementById('chat-window').classList.toggle('active'); 
+        }
+
+        function appendMsg(text, isUser = false) {
+            const content = document.getElementById('chat-content');
+            const msg = document.createElement('div');
+            
+            if (isUser) {
+                msg.className = "bg-gradient-to-r from-cyber-cyan to-cyber-purple text-white p-3 rounded-2xl rounded-tr-none ml-8 text-xs shadow-md font-rajdhani";
+            } else {
+                msg.className = "bg-white/5 text-slate-300 p-3 rounded-2xl rounded-tl-none mr-8 text-xs border border-white/5 whitespace-pre-line";
+            }
+            
+            msg.textContent = text;
+            content.appendChild(msg);
+            content.scrollTop = content.scrollHeight;
+        }
+
+        function findBestMatch(input) {
+            const inputLower = input.toLowerCase();
+            let bestMatch = null;
+            let highestScore = 0;
+            
+            for (const [key, value] of Object.entries(knowledgeBase)) {
+                const keywords = key.split(' ');
+                let score = 0;
+                keywords.forEach(keyword => {
+                    if (inputLower.includes(keyword)) {
+                        score++;
+                    }
+                });
+                if (score > highestScore) {
+                    highestScore = score;
+                    bestMatch = value;
+                }
+            }
+            
+            return highestScore > 0 ? bestMatch : null;
+        }
+
+        function handleChat() {
+            const input = document.getElementById('user-input');
+            const val = input.value.trim();
+            if(!val) return;
+            
+            appendMsg(val, true);
+            input.value = '';
+
+            setTimeout(() => {
+                const response = findBestMatch(val);
+                if (response) {
+                    appendMsg(response);
+                } else {
+                    appendMsg('No tengo informacion especifica sobre esa pregunta en esta unidad. Te sugiero revisar el contenido de las lecciones 1.1 a 1.4 o reformular tu pregunta usando palabras clave como "IA", "prompt", "herramientas" o "beneficios".');
+                }
+            }, 800);
+        }
+
+        document.getElementById('user-input').addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') handleChat(); 
+        });
+
+        // Quiz Data
+        const quizData = [
+            {
+                question: 'Cual es el principal beneficio de usar IA en administracion?',
+                options: ['Reemplazar completamente al administrador', 'Reducir tareas repetitivas y aumentar productividad', 'Hacer todo el trabajo automaticamente', 'Eliminar la necesidad de supervision'],
+                correct: 1
+            },
+            {
+                question: 'Un "prompt" efectivo debe incluir:',
+                options: ['Solo la tarea que quieres realizar', 'Contexto, tarea, formato y restricciones', 'La palabra "por favor" siempre', 'Codigo de programacion'],
+                correct: 1
+            },
+            {
+                question: 'Cual de estas NO es una herramienta de IA para administradores?',
+                options: ['ChatGPT', 'Notion AI', 'Photoshop', 'Gemini'],
+                correct: 2
+            },
+            {
+                question: 'La tecnica "Chain of Thought" consiste en:',
+                options: ['Pedir multiples respuestas a la vez', 'Solicitar que la IA explique su razonamiento paso a paso', 'Usar cadenas de texto muy largas', 'Conectar varias IAs entre si'],
+                correct: 1
+            },
+            {
+                question: 'Que herramienta es mejor para transcribir reuniones automaticamente?',
+                options: ['Excel', 'PowerPoint', 'Otter.ai', 'Gmail'],
+                correct: 2
+            },
+            {
+                question: 'Un prompt mal escrito seria:',
+                options: ['"Soy administrador. Escribe correo formal para proveedor sobre pago pendiente. Maximo 150 palabras"', '"Ayudame"', '"Actua como experto en finanzas y explica el ROI en 3 parrafos"', '"Resume este documento en 5 puntos clave"'],
+                correct: 1
+            },
+            {
+                question: 'Cual es la version gratuita de ChatGPT?',
+                options: ['GPT-4', 'GPT-5', 'GPT-3.5', 'GPT-Pro'],
+                correct: 2
+            },
+            {
+                question: 'Para integrar IA en Gmail, la mejor opcion es:',
+                options: ['ChatGPT', 'Gemini de Google', 'Claude', 'Copilot'],
+                correct: 1
+            },
+            {
+                question: 'Que porcentaje de tareas repetitivas puede reducir la IA segun el curso?',
+                options: ['30%', '50%', '70%', '100%'],
+                correct: 2
+            },
+            {
+                question: 'La "Regla de Oro" del prompting es:',
+                options: ['Usar siempre mas de 500 palabras', 'Si un humano no entenderia la instruccion, la IA tampoco', 'Nunca dar contexto', 'Pedir siempre multiples tareas a la vez'],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function renderQuestion() {
+            const container = document.getElementById('quiz-container');
+            const q = quizData[currentQuestion];
+            
+            container.innerHTML = `
+                <div class="mb-6">
+                    <p class="font-orbitron text-xs text-cyber-cyan mb-2">PREGUNTA ${currentQuestion + 1} DE 10</p>
+                    <h3 class="text-lg font-rajdhani font-bold text-white">${q.question}</h3>
+                </div>
+                <div class="space-y-3">
+                    ${q.options.map((opt, i) => `
+                        <button onclick="selectAnswer(${i})" class="w-full text-left p-4 rounded-xl bg-white/5 border border-white/10 hover:border-cyber-cyan/50 hover:bg-cyber-cyan/5 transition-all font-rajdhani text-sm text-gray-300" id="opt-${i}">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold mr-3">${String.fromCharCode(65 + i)}</span>
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function selectAnswer(index) {
+            const q = quizData[currentQuestion];
+            const buttons = document.querySelectorAll('[id^="opt-"]');
+            
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.correct) {
+                    btn.classList.remove('bg-white/5', 'border-white/10');
+                    btn.classList.add('bg-green-500/20', 'border-green-500/50');
+                } else if (i === index && index !== q.correct) {
+                    btn.classList.remove('bg-white/5', 'border-white/10');
+                    btn.classList.add('bg-red-500/20', 'border-red-500/50');
+                }
+            });
+            
+            if (index === q.correct) {
+                score++;
+            }
+            
+            document.getElementById('progress-bar').style.width = `${((currentQuestion + 1) / quizData.length) * 100}%`;
+            document.getElementById('progress-text').textContent = `${currentQuestion + 1}/10`;
+            
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            }, 1500);
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / quizData.length) * 100);
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('quiz-results').classList.remove('hidden');
+            document.getElementById('score-display').textContent = `${percentage}%`;
+            
+            if (percentage >= 70) {
+                document.getElementById('result-title').textContent = 'Felicidades!';
+                document.getElementById('result-title').classList.add('text-green-400');
+                document.getElementById('result-message').textContent = `Has aprobado la evaluacion con ${score} de 10 respuestas correctas. Estas listo para continuar con la Unidad 2.`;
+            } else {
+                document.getElementById('result-title').textContent = 'Necesitas repasar';
+                document.getElementById('result-title').classList.add('text-red-400');
+                document.getElementById('result-message').textContent = `Obtuviste ${score} de 10 respuestas correctas. Necesitas al menos 7 para aprobar. Te recomendamos revisar el contenido antes de volver a intentar.`;
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('progress-text').textContent = '0/10';
+            renderQuestion();
+        }
+
+        // Tabs
+        function openTab(evt, tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('bg-white/5', 'border', 'border-white/10');
+            });
+            
+            document.getElementById(tabName).classList.remove('hidden');
+            evt.currentTarget.classList.add('active');
+            evt.currentTarget.classList.remove('bg-white/5', 'border', 'border-white/10');
+        }
+
+        // Scroll Reveal
+        function revealOnScroll() {
+            const sections = document.querySelectorAll('.reveal-section');
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestion();
+            revealOnScroll();
+            window.addEventListener('scroll', revealOnScroll);
+        });
+    </script>
+</body>
+</html>
